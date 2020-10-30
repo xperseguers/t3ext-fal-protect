@@ -40,7 +40,7 @@ class FileMiddleware implements MiddlewareInterface
             /** @var Response $response */
             $response = GeneralUtility::makeInstance(Response::class);
 
-            $defaultStorage = ResourceFactory::getInstance()->getDefaultStorage();
+            $defaultStorage = GeneralUtility::makeInstance(ResourceFactory::class)->getDefaultStorage();
             $fileIdentifier = substr($target, strlen($fileadminDir));
 
             if (!$defaultStorage->hasFile($fileIdentifier)) {
