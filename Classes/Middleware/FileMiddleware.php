@@ -76,7 +76,7 @@ class FileMiddleware implements MiddlewareInterface
      */
     protected function isFileAccessible(FileInterface $file, FrontendUserAuthentication $user): bool
     {
-        // This check is supposed to never succeeds if the processed folder is properly
+        // This check is supposed to never succeed if the processed folder is properly
         // checked at the Web Server level to allow direct access
         if ($file->getStorage()->isWithinProcessingFolder($file->getIdentifier())) {
             return true;
