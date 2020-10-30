@@ -20,8 +20,10 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Http\Stream;
+use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -39,14 +41,14 @@ class FileMiddleware implements MiddlewareInterface
 
             $defaultStorage = ResourceFactory::getInstance()->getDefaultStorage();
             $fileIdentifier = substr($target, strlen($fileadminDir));
+
             if (!$defaultStorage->hasFile($fileIdentifier)) {
                 return $response->withStatus(403, 'Forbidden');
             }
 
             $file = $defaultStorage->getFile($fileIdentifier);
-
-            if (!$defaultStorage->isWithinProcessingFolder($fileIdentifier)) {
-                // TODO: Check security
+            if (!$this->isFileAccessible($file)) {
+                return $response->withStatus(403, 'Forbidden');
             }
 
             $fileName = $file->getForLocalProcessing(false);
@@ -58,6 +60,44 @@ class FileMiddleware implements MiddlewareInterface
         }
 
         return $handler->handle($request);
+    }
+
+    /**
+     * Checks whether a given file is accessible by current authenticated user.
+     *
+     * @param FileInterface $file
+     * @return bool
+     */
+    protected function isFileAccessible(FileInterface $file): bool
+    {
+        // This check is supposed to never succeeds if the processed folder is properly
+        // checked at the Web Server level to allow direct access
+        if ($file->getStorage()->isWithinProcessingFolder($file->getIdentifier())) {
+            return true;
+        }
+
+        $isVisible = $file->hasProperty('visible') ? (bool)$file->getProperty('visible') : true;
+        if ($isVisible) {
+            $accessGroups = $file->getProperty('fe_groups');
+            if (empty($accessGroups)) {
+                return true;
+            }
+
+            $accessGroups = GeneralUtility::intExplode(',', $accessGroups, true);
+
+            // Normally done in Middleware typo3/cms-frontend/prepare-tsfe-rendering but we want
+            // to be as lightweight as possible:
+            $GLOBALS['TSFE']->fe_user->fetchGroupData();
+
+            $frontendUserAspect = GeneralUtility::makeInstance(Context::class)->getAspect('frontend.user');
+            $userGroups = $frontendUserAspect->getGroupIds();
+
+            if (!empty(array_intersect($accessGroups, $userGroups))) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }

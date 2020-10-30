@@ -7,6 +7,7 @@ This extension protects everything within `/fileadmin/` based on associated file
 Edit file `.htaccess` to read:
 
 ```
+RewriteCond %{REQUEST_URI} !/fileadmin/_processed_/.*$
 RewriteRule ^fileadmin/.*$ %{ENV:CWD}index.php [QSA,L]
 ```
 
