@@ -85,11 +85,20 @@ class FileMiddleware implements MiddlewareInterface
 
             $accessGroups = GeneralUtility::intExplode(',', $accessGroups, true);
 
+            $frontendUserAspect = GeneralUtility::makeInstance(Context::class)->getAspect('frontend.user');
+
             // Normally done in Middleware typo3/cms-frontend/prepare-tsfe-rendering but we want
             // to be as lightweight as possible:
-            $GLOBALS['TSFE']->fe_user->fetchGroupData();
+            if (version_compare((new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch(), '10.4', '<')) {
+                $GLOBALS['TSFE']->fe_user->fetchGroupData();
+            } else {
+                $refObject = new \ReflectionObject($frontendUserAspect);
+                $userProperty = $refObject->getProperty('user');
+                $userProperty->setAccessible(true);
+                $user = $userProperty->getValue($frontendUserAspect);
+                $user->fetchGroupData();
+            }
 
-            $frontendUserAspect = GeneralUtility::makeInstance(Context::class)->getAspect('frontend.user');
             $userGroups = $frontendUserAspect->getGroupIds();
 
             if (!empty(array_intersect($accessGroups, $userGroups))) {
