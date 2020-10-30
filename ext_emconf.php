@@ -8,7 +8,7 @@
 
 $EM_CONF[$_EXTKEY] = [
     'title' => 'FAL Protect',
-    'description' => 'This extension protects everything within fileadmin/ based on associated file restrictions.',
+    'description' => 'This extension protects everything within /fileadmin/ based on associated file restrictions (visibility and user groups).',
     'category' => 'services',
     'shy' => 0,
     'version' => '0.1.0',

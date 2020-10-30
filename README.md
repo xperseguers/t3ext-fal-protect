@@ -1,6 +1,10 @@
 # FAL Protect
 
-This extension protects everything within `/fileadmin/` based on associated file restrictions.
+This extension protects everything within `/fileadmin/` based on associated file restrictions (visibility and user
+groups).
+
+Goal is that you have nothing to configure (at least at this point). Just install and enable the extension, block direct
+access and that's it!
 
 ## Installation (Apache)
 
@@ -25,6 +29,15 @@ location / {
 }
 ```
 
-## Testing
+## Why 404 instead of 403?
 
-If you try to access a non-existing file within `/fileadmin/`, you should get a 403 error.
+In case you try to access a restricted file and do not have the right to do so, the logical HTTP status code to use
+_should be_ either a `403 Forbidden` (or possibly a `401 Unauthorized`) but by doing so, you make it clear for a
+malicious user that the resource exists but is not accessible.
+
+We prefer, at least for the time being (see ideas for the future below) to issue a `404 Not Found` instead.
+
+## Ideas for the future
+
+* Instead of denying access altogether if the user is not authenticated at all, it could be useful to redirect to a
+  login page instead.

@@ -44,7 +44,7 @@ class FileMiddleware implements MiddlewareInterface
             $fileIdentifier = substr($target, strlen($fileadminDir));
 
             if (!$defaultStorage->hasFile($fileIdentifier)) {
-                return $response->withStatus(403, 'Forbidden');
+                return $response->withStatus(404, 'Not Found');
             }
 
             $frontendUser = version_compare((new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch(), '10.4', '<')
@@ -53,7 +53,7 @@ class FileMiddleware implements MiddlewareInterface
 
             $file = $defaultStorage->getFile($fileIdentifier);
             if (!$this->isFileAccessible($file, $frontendUser)) {
-                return $response->withStatus(403, 'Forbidden');
+                return $response->withStatus(404, 'Not Found');
             }
 
             $fileName = $file->getForLocalProcessing(false);
