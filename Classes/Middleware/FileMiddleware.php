@@ -26,6 +26,7 @@ use TYPO3\CMS\Core\Http\Stream;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 
 class FileMiddleware implements MiddlewareInterface
 {
@@ -46,8 +47,12 @@ class FileMiddleware implements MiddlewareInterface
                 return $response->withStatus(403, 'Forbidden');
             }
 
+            $frontendUser = version_compare((new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch(), '10.4', '<')
+                ? $GLOBALS['TSFE']->fe_user
+                : $request->getAttribute('frontend.user');
+
             $file = $defaultStorage->getFile($fileIdentifier);
-            if (!$this->isFileAccessible($file)) {
+            if (!$this->isFileAccessible($file, $frontendUser)) {
                 return $response->withStatus(403, 'Forbidden');
             }
 
@@ -66,9 +71,10 @@ class FileMiddleware implements MiddlewareInterface
      * Checks whether a given file is accessible by current authenticated user.
      *
      * @param FileInterface $file
+     * @param FrontendUserAuthentication $user
      * @return bool
      */
-    protected function isFileAccessible(FileInterface $file): bool
+    protected function isFileAccessible(FileInterface $file, FrontendUserAuthentication $user): bool
     {
         // This check is supposed to never succeeds if the processed folder is properly
         // checked at the Web Server level to allow direct access
@@ -85,20 +91,11 @@ class FileMiddleware implements MiddlewareInterface
 
             $accessGroups = GeneralUtility::intExplode(',', $accessGroups, true);
 
-            $frontendUserAspect = GeneralUtility::makeInstance(Context::class)->getAspect('frontend.user');
-
             // Normally done in Middleware typo3/cms-frontend/prepare-tsfe-rendering but we want
             // to be as lightweight as possible:
-            if (version_compare((new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch(), '10.4', '<')) {
-                $GLOBALS['TSFE']->fe_user->fetchGroupData();
-            } else {
-                $refObject = new \ReflectionObject($frontendUserAspect);
-                $userProperty = $refObject->getProperty('user');
-                $userProperty->setAccessible(true);
-                $user = $userProperty->getValue($frontendUserAspect);
-                $user->fetchGroupData();
-            }
+            $user->fetchGroupData();
 
+            $frontendUserAspect = GeneralUtility::makeInstance(Context::class)->getAspect('frontend.user');
             $userGroups = $frontendUserAspect->getGroupIds();
 
             if (!empty(array_intersect($accessGroups, $userGroups))) {
