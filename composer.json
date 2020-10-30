@@ -1,0 +1,44 @@
+{
+  "name": "causal/fal-protect",
+  "type": "typo3-cms-extension",
+  "description": "This extension protects everything within fileadmin/ based on associated file restrictions.",
+  "keywords": [
+    "TYPO3 CMS",
+    "FAL",
+    "files",
+    "directories",
+    "secure",
+    "security",
+    "protection"
+  ],
+  "homepage": "https://github.com/xperseguers/t3ext-fal-protect",
+  "support": {
+    "issues": "https://github.com/xperseguers/t3ext-fal-protect/issues"
+  },
+  "authors": [
+    {
+      "name": "Xavier Perseguers",
+      "email": "xavier@causal.ch",
+      "homepage": "https://www.causal.ch",
+      "role": "Developer"
+    }
+  ],
+  "license": "GPL-2.0-or-later",
+  "require": {
+    "php": ">= 7.2.0, <= 7.4.99",
+    "typo3/cms-core": "^9.5 || ^10"
+  },
+  "autoload": {
+    "psr-4": {
+      "Causal\\FalProtect\\": "Classes/"
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "0.1.x-dev"
+    },
+    "typo3/cms": {
+      "extension-key": "fal_protect"
+    }
+  }
+}
