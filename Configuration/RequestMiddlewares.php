@@ -1,7 +1,7 @@
 <?php
 return [
     'frontend' => [
-        'causal/fal-protect-file' => [
+        'causal/fal-protect/fetch-file' => [
             'target' => \Causal\FalProtect\Middleware\FileMiddleware::class,
             'after' => [
                 'typo3/cms-frontend/authentication',
