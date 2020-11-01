@@ -20,6 +20,8 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Http\Stream;
@@ -28,8 +30,10 @@ use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 
-class FileMiddleware implements MiddlewareInterface
+class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
 {
+
+    use LoggerAwareTrait;
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
@@ -41,6 +45,12 @@ class FileMiddleware implements MiddlewareInterface
             $response = GeneralUtility::makeInstance(Response::class);
 
             $defaultStorage = GeneralUtility::makeInstance(ResourceFactory::class)->getDefaultStorage();
+            if ($defaultStorage === null) {
+                $this->logger->error('Default storage cannot be determined, please check the configuration of your File Storage record at root.');
+                // It is better to block everything than possibly let an administrator think
+                // everything is correctly configured
+                return $response->withStatus(503, 'Service Unavailable');
+            }
             $fileIdentifier = substr($target, strlen($fileadminDir));
 
             if (!$defaultStorage->hasFile($fileIdentifier)) {
