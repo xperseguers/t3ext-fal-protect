@@ -19,13 +19,21 @@ RewriteRule ^fileadmin/.*$ %{ENV:CWD}index.php [QSA,L]
 
 ## Installation (Nginx)
 
-Edit your `location /` block to read:
+Edit your `server` block to read:
 
 ```
 location / {
     rewrite ^/fileadmin/(?!(_processed_/)) /index.php last;
 
     # snip
+}
+```
+
+or, if that better fits your setup, like that:
+
+```
+location ~ /fileadmin/(?!(_processed_/)) {
+    rewrite ^(.+)$ /index.php last;
 }
 ```
 
