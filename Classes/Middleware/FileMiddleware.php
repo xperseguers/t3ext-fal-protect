@@ -62,16 +62,29 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
                 : $request->getAttribute('frontend.user');
 
             $file = $defaultStorage->getFile($fileIdentifier);
-            if (!$this->isFileAccessible($file, $frontendUser)) {
+            $maxAge = 14400;    // TODO: make this somehow configurable?
+            if (!$this->isFileAccessible($file, $frontendUser, $maxAge)) {
                 return $response->withStatus(404, 'Not Found');
             }
 
             $fileName = $file->getForLocalProcessing(false);
 
-            return $response
+            $response = $response
                 ->withHeader('Content-Type', $file->getMimeType())
-                ->withHeader('Content-Length', (string)$file->getSize())
-                ->withBody(new Stream($fileName));
+                ->withHeader('Content-Length', (string)$file->getSize());
+
+            if ($maxAge > 0) {
+                $response = $response->withHeader('Cache-Control', 'public, max-age=' . $maxAge);
+            } else {
+                $response = $response
+                    ->withHeader('Cache-Control', [
+                        'no-store, no-cache, must-revalidate, max-age=0',
+                        'post-check=0, pre-check=0',
+                    ])
+                    ->withHeader('Pragma', 'no-cache');
+            }
+
+            return $response->withBody(new Stream($fileName));
         }
 
         return $handler->handle($request);
@@ -82,9 +95,10 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
      *
      * @param FileInterface $file
      * @param FrontendUserAuthentication $user
+     * @param int &$maxAge
      * @return bool
      */
-    protected function isFileAccessible(FileInterface $file, FrontendUserAuthentication $user): bool
+    protected function isFileAccessible(FileInterface $file, FrontendUserAuthentication $user, int &$maxAge): bool
     {
         // This check is supposed to never succeed if the processed folder is properly
         // checked at the Web Server level to allow direct access
@@ -109,6 +123,8 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
             $userGroups = $frontendUserAspect->getGroupIds();
 
             if (!empty(array_intersect($accessGroups, $userGroups))) {
+                // Prevent caching by a CDN or another kind of proxy
+                $maxAge = 0;
                 return true;
             }
         }
