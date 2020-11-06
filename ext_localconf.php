@@ -17,4 +17,8 @@ call_user_func(function(string $_EXTKEY) {
         );
     }
 
+    // Override the context menu as defined in EXT:filelist
+    $GLOBALS['TYPO3_CONF_VARS']['BE']['ContextMenu']['ItemProviders'][1486418731] = \Causal\FalProtect\ContextMenu\ItemProviders\FileProvider::class;
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/backend.php']['constructPostProcess'][] = \Causal\FalProtect\Hooks\BackendControllerHook::class . '->addJavaScript';
+
 }, 'fal_protect');
