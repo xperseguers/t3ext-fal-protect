@@ -1,0 +1,12 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  Causal\FalProtect\EventListener\CoreImagingEventListener:
+    tags:
+      - name: event.listener
+        identifier: 'causal/fal_protect'
+        method: 'postProcessIconForResource'
+        event: TYPO3\CMS\Core\Imaging\Event\ModifyIconForResourcePropertiesEvent
