@@ -16,9 +16,13 @@ declare(strict_types=1);
 
 namespace Causal\FalProtect\EventListener;
 
+use Causal\FalProtect\Domain\Repository\FolderRepository;
 use TYPO3\CMS\Core\Imaging\Event\ModifyIconForResourcePropertiesEvent;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\FileInterface;
+use TYPO3\CMS\Core\Resource\Folder;
+use TYPO3\CMS\Core\Resource\FolderInterface;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class CoreImagingEventListener
@@ -35,8 +39,10 @@ class CoreImagingEventListener
         $overlayIdentifier = null;
 
         $resource = $event->getResource();
-        if ($resource instanceof File) {
-            $overlayIdentifier = static::getOverlayIdentifier($resource);
+        if ($resource instanceof Folder) {
+            $overlayIdentifier = static::getFolderOverlayIdentifier($resource);
+        } elseif ($resource instanceof File) {
+            $overlayIdentifier = static::getFileOverlayIdentifier($resource);
         }
 
         if ($overlayIdentifier !== null) {
@@ -45,11 +51,30 @@ class CoreImagingEventListener
     }
 
     /**
+     * @param FolderInterface $folder
+     * @return string|null
+     * @internal
+     */
+    public static function getFolderOverlayIdentifier(FolderInterface $folder): ?string
+    {
+        // As found in EXT:core/Configuration/DefaultConfiguration.php
+        $recordStatusMapping = $GLOBALS['TYPO3_CONF_VARS']['SYS']['IconFactory']['recordStatusMapping'];
+
+        $folderRepository = GeneralUtility::makeInstance(FolderRepository::class);
+        $record = $folderRepository->findOneByObject($folder, false);
+        if (!empty($record['fe_groups'] ?? '')) {
+            return $recordStatusMapping['fe_group'];
+        }
+
+        return null;
+    }
+
+    /**
      * @param FileInterface $file
      * @return string|null
      * @internal
      */
-    public static function getOverlayIdentifier(FileInterface $file): ?string
+    public static function getFileOverlayIdentifier(FileInterface $file): ?string
     {
         $overlayIdentifier = null;
 

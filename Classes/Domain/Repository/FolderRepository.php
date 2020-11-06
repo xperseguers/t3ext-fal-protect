@@ -18,13 +18,14 @@ namespace Causal\FalProtect\Domain\Repository;
 
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Resource\Folder;
+use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class FolderRepository
  * @package Causal\FalProtect\Domain\Repository
  */
-class FolderRepository
+class FolderRepository implements SingletonInterface
 {
 
     /**
@@ -34,22 +35,10 @@ class FolderRepository
 
     /**
      * @param Folder $folder
-     * @return array
-     */
-    public function get(Folder $folder): array
-    {
-        $record = $this->findOneByObject($folder);
-        if ($record === null) {
-            $record = $this->createFolderRecord($folder);
-        }
-        return $record;
-    }
-
-    /**
-     * @param Folder $folder
+     * @param bool $createIfNotExisting
      * @return array|null
      */
-    protected function findOneByObject(Folder $folder): ?array
+    public function findOneByObject(Folder $folder, bool $createIfNotExisting = true): ?array
     {
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable($this->tableName);
         $record = $connection
@@ -63,7 +52,14 @@ class FolderRepository
             )
             ->fetch();
 
-        return !empty($record) ? $record : null;
+        if (empty($record)) {
+            $record = null;
+            if ($createIfNotExisting) {
+                $record = $this->createFolderRecord($folder);
+            }
+        }
+
+        return $record;
     }
 
     /**

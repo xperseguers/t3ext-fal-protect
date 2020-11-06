@@ -92,7 +92,7 @@ class EditFolderController
             return new RedirectResponse($this->returnUrl);
         }
 
-        $record = $this->folderRepository->get($this->folderObject);
+        $record = $this->folderRepository->findOneByObject($this->folderObject);
         $urlParameters = [
             'edit' => [
                 $this->folderRepository->tableName => [

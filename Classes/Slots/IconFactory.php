@@ -18,6 +18,7 @@ namespace Causal\FalProtect\Slots;
 
 use Causal\FalProtect\EventListener\CoreImagingEventListener;
 use TYPO3\CMS\Core\Resource\File;
+use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Resource\ResourceInterface;
 
 /**
@@ -45,11 +46,12 @@ class IconFactory
         ?string $overlayIdentifier
     ): array
     {
-        if ($resource instanceof File) {
-            $newOverlayIdentifier = CoreImagingEventListener::getOverlayIdentifier($resource);
-            if ($newOverlayIdentifier !== null) {
-                $overlayIdentifier = $newOverlayIdentifier;
-            }
+        $newOverlayIdentifier = null;
+
+        if ($resource instanceof Folder) {
+            $newOverlayIdentifier = CoreImagingEventListener::getFolderOverlayIdentifier($resource);
+        } elseif ($resource instanceof File) {
+            $newOverlayIdentifier = CoreImagingEventListener::getFileOverlayIdentifier($resource);
         }
 
         $result = [
@@ -57,7 +59,7 @@ class IconFactory
             $size,
             $options,
             $iconIdentifier,
-            $overlayIdentifier
+            $newOverlayIdentifier ?? $overlayIdentifier
         ];
 
         return $result;
