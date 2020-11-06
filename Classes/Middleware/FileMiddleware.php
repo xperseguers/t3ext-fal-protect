@@ -108,6 +108,13 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
 
         $isVisible = $file->hasProperty('visible') ? (bool)$file->getProperty('visible') : true;
         if ($isVisible) {
+            $startTime = $file->getProperty('starttime');
+            $endTime = $file->getProperty('endtime');
+            if (($startTime > 0 && $startTime > $GLOBALS['SIM_ACCESS_TIME'])
+                || ($endTime > 0 && $endTime < $GLOBALS['SIM_ACCESS_TIME'])) {
+                return false;
+            }
+
             $accessGroups = $file->getProperty('fe_groups');
             if (empty($accessGroups)) {
                 return true;
