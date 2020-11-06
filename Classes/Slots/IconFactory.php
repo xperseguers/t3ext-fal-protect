@@ -9,7 +9,7 @@ declare(strict_types=1);
  * of the License, or any later version.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with TYPO3 source code.
+ * LICENSE file that was distributed with this source code.
  *
  * The TYPO3 project - inspiring people to share!
  */

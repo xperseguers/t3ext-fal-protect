@@ -9,7 +9,7 @@ declare(strict_types=1);
  * of the License, or any later version.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with TYPO3 source code.
+ * LICENSE file that was distributed with this source code.
  *
  * The TYPO3 project - inspiring people to share!
  */
@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace Causal\FalProtect\ContextMenu\ItemProviders;
 
 use TYPO3\CMS\Core\Resource\Folder;
+use TYPO3\CMS\Core\Resource\FolderInterface;
 
 /**
  * Class FileProvider
@@ -32,6 +33,7 @@ class FileProvider extends \TYPO3\CMS\Filelist\ContextMenu\ItemProviders\FilePro
     {
         parent::initialize();
         if ($this->record instanceof Folder) {
+            $this->itemsConfiguration['edit']['iconIdentifier'] = 'actions-open';
             $this->itemsConfiguration['edit']['callbackAction'] = 'editFolder';
         }
     }
@@ -41,12 +43,14 @@ class FileProvider extends \TYPO3\CMS\Filelist\ContextMenu\ItemProviders\FilePro
      */
     protected function canBeEdited(): bool
     {
-        return $this->isFolder()
-            || (
-                $this->isFile()
+        if ($this->isFolder()) {
+            return $this->record->getStorage()->isDefault()
+                && $this->record->getRole() !== FolderInterface::ROLE_TEMPORARY;
+        } else {
+            return $this->isFile()
                 && $this->record->checkActionPermission('write')
-                && $this->record->isTextFile()
-            );
+                && $this->record->isTextFile();
+        }
     }
 
     /**

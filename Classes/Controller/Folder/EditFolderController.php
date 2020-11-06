@@ -9,19 +9,20 @@ declare(strict_types=1);
  * of the License, or any later version.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with TYPO3 source code.
+ * LICENSE file that was distributed with this source code.
  *
  * The TYPO3 project - inspiring people to share!
  */
 
 namespace Causal\FalProtect\Controller\Folder;
 
+use Causal\FalProtect\Domain\Repository\FolderRepository;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
-use TYPO3\CMS\Backend\Template\ModuleTemplate;
-use TYPO3\CMS\Core\Http\HtmlResponse;
-use TYPO3\CMS\Core\Resource\File;
+use TYPO3\CMS\Core\Http\RedirectResponse;
+use TYPO3\CMS\Core\Resource\Folder;
+use TYPO3\CMS\Core\Resource\StorageRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -30,20 +31,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class EditFolderController
 {
-
-    /**
-     * Module content accumulated.
-     *
-     * @var string
-     */
-    protected $content;
-
-    /**
-     * Original input target
-     *
-     * @var string
-     */
-    protected $origTarget;
 
     /**
      * The original target, but validated.
@@ -60,18 +47,21 @@ class EditFolderController
     protected $returnUrl;
 
     /**
-     * the file that is being edited on
+     * The folder that is being edited on
      *
-     * @var File
+     * @var Folder
      */
-    protected $fileObject;
+    protected $folderObject;
 
     /**
-     * ModuleTemplate object
-     *
-     * @var ModuleTemplate
+     * @var StorageRepository
      */
-    protected $moduleTemplate;
+    protected $storageRepository;
+
+    /**
+     * @var FolderRepository
+     */
+    protected $folderRepository;
 
     /**
      * @var UriBuilder
@@ -83,7 +73,8 @@ class EditFolderController
      */
     public function __construct()
     {
-        $this->moduleTemplate = GeneralUtility::makeInstance(ModuleTemplate::class);
+        $this->storageRepository = GeneralUtility::makeInstance(StorageRepository::class);
+        $this->folderRepository = GeneralUtility::makeInstance(FolderRepository::class);
         $this->uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
     }
 
@@ -95,7 +86,43 @@ class EditFolderController
      */
     public function mainAction(ServerRequestInterface $request): ResponseInterface
     {
-        return new HtmlResponse('TODO: Implement edit folder form here ^^'/*$this->moduleTemplate->renderContent()*/);
+        $this->init($request);
+
+        if ($this->folderObject === null) {
+            return new RedirectResponse($this->returnUrl);
+        }
+
+        $record = $this->folderRepository->get($this->folderObject);
+        $urlParameters = [
+            'edit' => [
+                $this->folderRepository->tableName => [
+                    $record['uid'] => 'edit'
+                ]
+            ],
+            'returnUrl' => $this->returnUrl
+        ];
+        $url = (string)$this->uriBuilder->buildUriFromRoute('record_edit', $urlParameters);
+
+        return new RedirectResponse($url);
+    }
+
+    /**
+     * @param ServerRequestInterface $request
+     */
+    protected function init(ServerRequestInterface $request): void
+    {
+        $parsedBody = $request->getParsedBody();
+        $queryParams = $request->getQueryParams();
+
+        $this->target = ($combinedIdentifier = $parsedBody['target'] ?? $queryParams['target'] ?? '');
+        $this->returnUrl = GeneralUtility::sanitizeLocalUrl($parsedBody['returnUrl'] ?? $queryParams['returnUrl'] ?? '');
+
+        if (preg_match('/^(\d+):(.*)$/', $combinedIdentifier, $matches)) {
+            $storage = $this->storageRepository->findByUid((int)$matches[1]);
+            if ($storage !== null && $storage->isDefault()) {
+                $this->folderObject = $storage->getFolder($matches[2]);
+            }
+        }
     }
 
 }
