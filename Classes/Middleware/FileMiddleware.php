@@ -30,6 +30,10 @@ use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 
+/**
+ * Class FileMiddleware
+ * @package Causal\FalProtect\Middleware
+ */
 class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
 {
 
