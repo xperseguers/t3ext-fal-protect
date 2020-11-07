@@ -15,6 +15,22 @@ call_user_func(function(string $_EXTKEY) {
             \Causal\FalProtect\Slots\IconFactory::class,
             'postProcessIconForResource'
         );
+
+        $listenSignals = [
+            \TYPO3\CMS\Core\Resource\ResourceStorageInterface::SIGNAL_PostFolderCopy,
+            \TYPO3\CMS\Core\Resource\ResourceStorageInterface::SIGNAL_PostFolderMove,
+            \TYPO3\CMS\Core\Resource\ResourceStorageInterface::SIGNAL_PreFolderRename,
+            \TYPO3\CMS\Core\Resource\ResourceStorageInterface::SIGNAL_PostFolderRename,
+            \TYPO3\CMS\Core\Resource\ResourceStorageInterface::SIGNAL_PostFolderDelete,
+        ];
+        foreach ($listenSignals as $signal) {
+            $signalSlotDispatcher->connect(
+                'TYPO3\\CMS\\Core\\Resource\\ResourceStorage',
+                $signal,
+                \Causal\FalProtect\Slots\ResourceStorage::class,
+                $signal
+            );
+        }
     }
 
     // Override the context menu as defined in EXT:filelist

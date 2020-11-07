@@ -63,6 +63,30 @@ class FolderRepository implements SingletonInterface
     }
 
     /**
+     * @param Folder $source
+     * @param Folder $target
+     */
+    public function moveRestrictions(Folder $source, Folder $target): void
+    {
+        $record = $this->findOneByObject($source, false);
+        if ($record !== null) {
+            $record['identifier'] = $target->getIdentifier();
+            $record['identifier_hash'] = $target->getHashedIdentifier();
+            $record['tstamp'] = $GLOBALS['EXEC_TIME'];
+
+            GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getConnectionForTable($this->tableName)
+                ->update(
+                    $this->tableName,
+                    $record,
+                    [
+                        'uid' => $record['uid'],
+                    ]
+                );
+        }
+    }
+
+    /**
      * Creates an empty folder record.
      *
      * @param Folder $folder

@@ -26,13 +26,14 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class BackendControllerHook
 {
+
     /**
      * Adds FalProtect JavaScript used e.g. by context menu
      *
      * @param array $configuration
      * @param BackendController $backendController
      */
-    public function addJavaScript(array $configuration, BackendController $backendController)
+    public function addJavaScript(array $configuration, BackendController $backendController): void
     {
         $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
         /** @var \TYPO3\CMS\Backend\Routing\UriBuilder $uriBuilder */
