@@ -21,4 +21,9 @@ call_user_func(function(string $_EXTKEY) {
     $GLOBALS['TYPO3_CONF_VARS']['BE']['ContextMenu']['ItemProviders'][1486418731] = \Causal\FalProtect\ContextMenu\ItemProviders\FileProvider::class;
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/backend.php']['constructPostProcess'][] = \Causal\FalProtect\Hooks\BackendControllerHook::class . '->addJavaScript';
 
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addUserTSConfig('
+        options.saveDocNew.tx_falprotect_folder = 0
+        options.disableDelete.tx_falprotect_folder = 1
+    ');
+
 }, 'fal_protect');
