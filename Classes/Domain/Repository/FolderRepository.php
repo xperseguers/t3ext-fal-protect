@@ -87,6 +87,22 @@ class FolderRepository implements SingletonInterface
     }
 
     /**
+     * @param Folder $folder
+     */
+    public function deleteRestrictions(Folder $folder): void
+    {
+        GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getConnectionForTable($this->tableName)
+            ->delete(
+                $this->tableName,
+                [
+                    'storage' => $folder->getStorage()->getUid(),
+                    'identifier_hash' => $folder->getHashedIdentifier(),
+                ]
+            );
+    }
+
+    /**
      * Creates an empty folder record.
      *
      * @param Folder $folder

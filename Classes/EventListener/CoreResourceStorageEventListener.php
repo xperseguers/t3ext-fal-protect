@@ -98,7 +98,7 @@ class CoreResourceStorageEventListener
      */
     public function afterFolderDeleted(AfterFolderDeletedEvent $event): void
     {
-        // TODO
+        $this->folderRepository->deleteRestrictions($event->getFolder());
     }
 
 }

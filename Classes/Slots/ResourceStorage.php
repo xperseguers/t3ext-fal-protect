@@ -72,7 +72,7 @@ class ResourceStorage
      */
     public function postFolderDelete(Folder $folder): void
     {
-        // TODO
+        $this->folderRepository->deleteRestrictions($folder);
     }
 
     /**
