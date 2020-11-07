@@ -16,6 +16,7 @@ declare(strict_types=1);
 
 namespace Causal\FalProtect\Middleware;
 
+use Causal\FalProtect\Domain\Repository\FolderRepository;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -110,6 +111,27 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
             return true;
         }
 
+        // Normally done in Middleware typo3/cms-frontend/prepare-tsfe-rendering but we want
+        // to be as lightweight as possible:
+        $user->fetchGroupData();
+
+        $frontendUserAspect = GeneralUtility::makeInstance(Context::class)->getAspect('frontend.user');
+        $userGroups = $frontendUserAspect->getGroupIds();
+
+        // Check access restrictions on folders up to the root
+        // InsufficientFolderAccessPermissionsException does not seem to be throwable in that context
+        $folder = $file->getParentFolder();
+        $folderRepository = GeneralUtility::makeInstance(FolderRepository::class);
+        while ($folder->getIdentifier() !== '/') {
+            $record = $folderRepository->findOneByObject($folder, false);
+            $accessGroups = GeneralUtility::intExplode(',', $record['fe_groups'] ?? '', true);
+            if (!empty($accessGroups) && empty(array_intersect($accessGroups, $userGroups))) {
+                // Access denied
+                return false;
+            }
+            $folder = $folder->getParentFolder();
+        }
+
         $isVisible = $file->hasProperty('visible') ? (bool)$file->getProperty('visible') : true;
         if ($isVisible) {
             $startTime = $file->getProperty('starttime');
@@ -125,14 +147,6 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
             }
 
             $accessGroups = GeneralUtility::intExplode(',', $accessGroups, true);
-
-            // Normally done in Middleware typo3/cms-frontend/prepare-tsfe-rendering but we want
-            // to be as lightweight as possible:
-            $user->fetchGroupData();
-
-            $frontendUserAspect = GeneralUtility::makeInstance(Context::class)->getAspect('frontend.user');
-            $userGroups = $frontendUserAspect->getGroupIds();
-
             if (!empty(array_intersect($accessGroups, $userGroups))) {
                 // Prevent caching by a CDN or another kind of proxy
                 $maxAge = 0;
