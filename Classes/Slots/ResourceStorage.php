@@ -64,7 +64,9 @@ class ResourceStorage
      * @param $newName
      */
     public function postFolderCopy(Folder $folder, Folder $targetFolder, string $newName): void {
-        // TODO
+        $newIdentifier = $targetFolder->getIdentifier() . $newName . '/';
+        $newFolder = $targetFolder->getStorage()->getFolder($newIdentifier);
+        $this->folderRepository->copyRestrictions($folder, $newFolder);
     }
 
     /**

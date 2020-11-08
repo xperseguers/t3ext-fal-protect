@@ -87,6 +87,18 @@ class FolderRepository implements SingletonInterface
     }
 
     /**
+     * @param Folder $source
+     * @param Folder $target
+     */
+    public function copyRestrictions(Folder $source, Folder $target): void
+    {
+        $record = $this->findOneByObject($source, false);
+        if ($record !== null && !empty($record['fe_groups'])) {
+            $this->createFolderRecord($target, $record['fe_groups']);
+        }
+    }
+
+    /**
      * @param Folder $folder
      */
     public function deleteRestrictions(Folder $folder): void
@@ -106,9 +118,10 @@ class FolderRepository implements SingletonInterface
      * Creates an empty folder record.
      *
      * @param Folder $folder
+     * @param string|null $feGroups
      * @return array
      */
-    protected function createFolderRecord(Folder $folder): array
+    protected function createFolderRecord(Folder $folder, ?string $feGroups = null): array
     {
         $emptyRecord = [
             'pid' => 0,
@@ -118,6 +131,7 @@ class FolderRepository implements SingletonInterface
             'storage' => $folder->getStorage()->getUid(),
             'identifier' => $folder->getIdentifier(),
             'identifier_hash' => $folder->getHashedIdentifier(),
+            'fe_groups' => $feGroups,
         ];
 
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable($this->tableName);

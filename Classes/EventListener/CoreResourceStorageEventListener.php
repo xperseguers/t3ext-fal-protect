@@ -58,7 +58,7 @@ class CoreResourceStorageEventListener
      */
     public function afterFolderCopied(AfterFolderCopiedEvent $event): void
     {
-        // TODO
+        $this->folderRepository->copyRestrictions($event->getFolder(), $event->getTargetFolder());
     }
 
     /**
