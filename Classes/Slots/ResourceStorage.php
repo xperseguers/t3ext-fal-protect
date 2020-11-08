@@ -55,7 +55,9 @@ class ResourceStorage
      */
     public function postFolderMove(Folder $folder, Folder $targetFolder, string $newName, Folder $originalFolder): void
     {
-        // TODO
+        $newIdentifier = $targetFolder->getIdentifier() . $newName . '/';
+        $newFolder = $targetFolder->getStorage()->getFolder($newIdentifier);
+        $this->folderRepository->moveRestrictions($folder, $newFolder);
     }
 
     /**

@@ -68,7 +68,7 @@ class CoreResourceStorageEventListener
      */
     public function afterFolderMoved(AfterFolderMovedEvent $event): void
     {
-        // TODO
+        $this->folderRepository->moveRestrictions($event->getFolder(), $event->getTargetFolder());
     }
 
     /**
