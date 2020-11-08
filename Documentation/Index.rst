@@ -36,3 +36,4 @@ FAL Protect
     AdministratorManual/Index
     KnownProblems/Index
     Links
+    genindex
