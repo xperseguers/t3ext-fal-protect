@@ -54,3 +54,7 @@ We prefer, at least for the time being (see ideas for the future below) to issue
 
 * Instead of denying access altogether if the user is not authenticated at all, it could be useful to redirect to a
   login page instead.
+
+## Complete documentation
+
+A more complete documentation can be found on https://docs.typo3.org/p/causal/fal_protect/main/en-us/.
