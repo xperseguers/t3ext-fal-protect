@@ -4,9 +4,35 @@ services:
     autoconfigure: true
     public: false
 
+  Causal\FalProtect\:
+    resource: '../Classes/*'
+
   Causal\FalProtect\EventListener\CoreImagingEventListener:
     tags:
       - name: event.listener
         identifier: 'causal/fal_protect'
         method: 'postProcessIconForResource'
         event: TYPO3\CMS\Core\Imaging\Event\ModifyIconForResourcePropertiesEvent
+
+  Causal\FalProtect\EventListener\CoreResourceStorageEventListener:
+    tags:
+      - name: event.listener
+        identifier: 'causal/fal_protect'
+        method: 'afterFolderCopied'
+        event: TYPO3\CMS\Core\Resource\Event\AfterFolderCopiedEvent
+      - name: event.listener
+        identifier: 'causal/fal_protect'
+        method: 'afterFolderMoved'
+        event: TYPO3\CMS\Core\Resource\Event\AfterFolderMovedEvent
+      - name: event.listener
+        identifier: 'causal/fal_protect'
+        method: 'beforeFolderRenamed'
+        event: TYPO3\CMS\Core\Resource\Event\BeforeFolderRenamedEvent
+      - name: event.listener
+        identifier: 'causal/fal_protect'
+        method: 'afterFolderRenamed'
+        event: TYPO3\CMS\Core\Resource\Event\AfterFolderRenamedEvent
+      - name: event.listener
+        identifier: 'causal/fal_protect'
+        method: 'afterFolderDeleted'
+        event: TYPO3\CMS\Core\Resource\Event\AfterFolderDeletedEvent

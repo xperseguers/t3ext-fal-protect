@@ -15,6 +15,31 @@ call_user_func(function(string $_EXTKEY) {
             \Causal\FalProtect\Slots\IconFactory::class,
             'postProcessIconForResource'
         );
+
+        $listenSignals = [
+            \TYPO3\CMS\Core\Resource\ResourceStorageInterface::SIGNAL_PostFolderCopy,
+            \TYPO3\CMS\Core\Resource\ResourceStorageInterface::SIGNAL_PostFolderMove,
+            \TYPO3\CMS\Core\Resource\ResourceStorageInterface::SIGNAL_PreFolderRename,
+            \TYPO3\CMS\Core\Resource\ResourceStorageInterface::SIGNAL_PostFolderRename,
+            \TYPO3\CMS\Core\Resource\ResourceStorageInterface::SIGNAL_PostFolderDelete,
+        ];
+        foreach ($listenSignals as $signal) {
+            $signalSlotDispatcher->connect(
+                'TYPO3\\CMS\\Core\\Resource\\ResourceStorage',
+                $signal,
+                \Causal\FalProtect\Slots\ResourceStorage::class,
+                $signal
+            );
+        }
     }
+
+    // Override the context menu as defined in EXT:filelist
+    $GLOBALS['TYPO3_CONF_VARS']['BE']['ContextMenu']['ItemProviders'][1486418731] = \Causal\FalProtect\ContextMenu\ItemProviders\FileProvider::class;
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/backend.php']['constructPostProcess'][] = \Causal\FalProtect\Hooks\BackendControllerHook::class . '->addJavaScript';
+
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addUserTSConfig('
+        options.saveDocNew.tx_falprotect_folder = 0
+        options.disableDelete.tx_falprotect_folder = 1
+    ');
 
 }, 'fal_protect');

@@ -9,7 +9,7 @@ declare(strict_types=1);
  * of the License, or any later version.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with TYPO3 source code.
+ * LICENSE file that was distributed with this source code.
  *
  * The TYPO3 project - inspiring people to share!
  */
@@ -18,6 +18,7 @@ namespace Causal\FalProtect\Slots;
 
 use Causal\FalProtect\EventListener\CoreImagingEventListener;
 use TYPO3\CMS\Core\Resource\File;
+use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Resource\ResourceInterface;
 
 /**
@@ -45,11 +46,12 @@ class IconFactory
         ?string $overlayIdentifier
     ): array
     {
-        if ($resource instanceof File) {
-            $newOverlayIdentifier = CoreImagingEventListener::getOverlayIdentifier($resource);
-            if ($newOverlayIdentifier !== null) {
-                $overlayIdentifier = $newOverlayIdentifier;
-            }
+        $newOverlayIdentifier = null;
+
+        if ($resource instanceof Folder) {
+            $newOverlayIdentifier = CoreImagingEventListener::getFolderOverlayIdentifier($resource);
+        } elseif ($resource instanceof File) {
+            $newOverlayIdentifier = CoreImagingEventListener::getFileOverlayIdentifier($resource);
         }
 
         $result = [
@@ -57,7 +59,7 @@ class IconFactory
             $size,
             $options,
             $iconIdentifier,
-            $overlayIdentifier
+            $newOverlayIdentifier ?? $overlayIdentifier
         ];
 
         return $result;
