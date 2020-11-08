@@ -27,7 +27,7 @@ Visible
   If you turn off the visibility of the file, this has the same effect as making other TYPO3 records "hidden". You
   cannot access it anymore.
 
-Start and End Time
+Start and Stop Time
   These fields are provided by this extension to let you enforce time-based restrictions.
 
 Access
