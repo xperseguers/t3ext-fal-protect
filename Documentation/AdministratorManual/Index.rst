@@ -41,7 +41,7 @@ Edit file :file:`.htaccess` (or your virtual host) to read:
 Installation (Nginx)
 --------------------
 
-Edit your `server` block to read:
+Edit your ``server`` block to read:
 
 .. code-block:: nginx
 

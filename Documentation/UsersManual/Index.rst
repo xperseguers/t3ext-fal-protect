@@ -34,7 +34,7 @@ Access
   Similarly to other records, this lets you restrict access to either unauthenticated, or authenticated users or any
   list of Frontend user groups.
 
-To protect a folder, you need to _right click_ its icon, either in the tree or in the list and click the "Edit" menu
+To protect a folder, you need to *right click* its icon, either in the tree or in the list and click the "Edit" menu
 entry:
 
 .. image:: ../Images/right-click.png
@@ -61,7 +61,7 @@ Why 404 instead of 403?
 -----------------------
 
 In case you try to access a restricted file and do not have the right to do so, the logical HTTP status code to use
-_should be_ either a `403 Forbidden` (or possibly a `401 Unauthorized`) but by doing so, you make it clear for a
+*should be* either a ``403 Forbidden`` (or possibly a ``401 Unauthorized``) but by doing so, you make it clear for a
 malicious user that the resource exists but is not accessible.
 
-We prefer, at least for the time being to issue a `404 Not Found` instead.
+We prefer, at least for the time being to issue a ``404 Not Found`` instead.

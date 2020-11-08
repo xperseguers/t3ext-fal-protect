@@ -56,7 +56,7 @@ We prefer, at least for the time being (see ideas for the future below) to issue
 
 ## Ideas for the future
 
-* Instead of denying access altogether if the user is not authenticated at all, it could be useful to redirect to a
+- Instead of denying access altogether if the user is not authenticated at all, it could be useful to redirect to a
   login page instead.
 
 ## Complete documentation
