@@ -17,7 +17,7 @@ publication):
 
 .. image:: ../Images/overview.png
    :alt: Protecting a folder and a few individual files
-   :align: center
+   :class: with-border with-shadow
 
 Unlike other similar extensions securing the File Abstraction Layer (FAL) of
 TYPO3, this extension aims at making it straightforward to block direct access
