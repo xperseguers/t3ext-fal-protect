@@ -1,7 +1,11 @@
 # FAL Protect
 
 This extension protects everything within `/fileadmin/` based on associated folder and file restrictions (visibility,
-user groups and dates of publication).
+user groups and dates of publication):
+
+![Protecting a folder and a few individual files][overview]
+
+[overview]: https://raw.githubusercontent.com/xperseguers/t3ext-fal-protect/main/Documentation/Images/overview.png "Protecting a folder and a few individual files"
 
 Unlike other similar extensions securing the File Abstraction Layer (FAL) of TYPO3, this extension aims at making it
 straightforward to block direct access to your sensitive assets.
