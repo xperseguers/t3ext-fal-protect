@@ -58,3 +58,10 @@ or, if that better fits your setup, like that:
    location ~ /fileadmin/(?!(_processed_/)) {
        rewrite ^(.+)$ /index.php last;
    }
+
+.. note::
+
+   By design, the "_processed_" folder (:file:`/fileadmin/_processed_/`) is not protected and its content (thumbnails or
+   resized/cropped images) is always freely accessible. The rules above exclude this directory from useless processing
+   by TYPO3 but even if you ask to process absolutely everything by this extension, files within the "_processed_"
+   folder are always public.
