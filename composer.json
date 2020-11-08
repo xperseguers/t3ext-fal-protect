@@ -1,7 +1,7 @@
 {
   "name": "causal/fal-protect",
   "type": "typo3-cms-extension",
-  "description": "This extension protects everything within /fileadmin/ based on associated file restrictions (visibility and user groups).",
+  "description": "Protect everything within /fileadmin/ based on associated folder and file restrictions (visibility, user groups and dates of publication).",
   "keywords": [
     "TYPO3 CMS",
     "FAL",

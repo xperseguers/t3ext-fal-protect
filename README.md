@@ -1,10 +1,15 @@
 # FAL Protect
 
-This extension protects everything within `/fileadmin/` based on associated file restrictions (visibility and user
-groups).
+This extension protects everything within `/fileadmin/` based on associated folder and file restrictions (visibility,
+user groups and dates of publication).
 
-Goal is that you have nothing to configure (at least at this point). Just install and enable the extension, block direct
-access and that's it!
+Unlike other similar extensions securing the File Abstraction Layer (FAL) of TYPO3, this extension aims at making it
+straightforward to block direct access to your sensitive assets.
+
+No need to configure anything, just install and enable as usual, block direct access at the server level (Apache/Nginx
+see below) and... that's it!
+
+Our motto? [KISS](https://en.wikipedia.org/wiki/KISS_principle)!
 
 ## Installation (Apache)
 
