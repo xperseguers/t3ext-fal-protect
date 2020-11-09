@@ -14,6 +14,7 @@ To protect a file, edit its metadata and switch to the "Access" tab:
 .. image:: ../Images/access-file.png
    :alt: Restricting access to a given file
    :align: center
+   :class: with-border with-shadow
 
 Following options are available:
 
@@ -35,6 +36,7 @@ in the list and click the "Edit" menu entry:
 .. image:: ../Images/right-click.png
    :alt: Editing restrictions on a folder
    :align: center
+   :class: with-border with-shadow
 
 You will be presented with an Access form similar to the one for files where
 you can choose to restrict access to any user group:
@@ -42,6 +44,7 @@ you can choose to restrict access to any user group:
 .. image:: ../Images/access-folder.png
    :alt: Restricting access to a given folder
    :align: center
+   :class: with-border with-shadow
 
 .. hint::
 
