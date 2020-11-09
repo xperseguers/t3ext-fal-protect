@@ -31,7 +31,7 @@ Access
   unauthenticated, or authenticated users or any list of Frontend user groups.
 
 To protect a folder, you need to *right click* its icon, either in the tree or
-in the list and click the "Edit" menu entry:
+in the list and click the "Folder permissions" menu entry:
 
 .. image:: ../Images/right-click.png
    :alt: Editing restrictions on a folder
