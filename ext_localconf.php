@@ -33,6 +33,10 @@ call_user_func(function(string $_EXTKEY) {
         }
     }
 
+    // Refresh the file tree after updating permissions on a folder
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] =
+        \Causal\FalProtect\Hooks\DataHandler::class;
+
     // Override the context menu as defined in EXT:filelist
     $GLOBALS['TYPO3_CONF_VARS']['BE']['ContextMenu']['ItemProviders'][1486418731] = \Causal\FalProtect\ContextMenu\ItemProviders\FileProvider::class;
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/backend.php']['constructPostProcess'][] = \Causal\FalProtect\Hooks\BackendControllerHook::class . '->addJavaScript';
