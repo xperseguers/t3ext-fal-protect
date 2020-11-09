@@ -10,6 +10,7 @@ return [
         'cruser_id' => 'cruser_id',
         'hideTable' => true,
         'rootLevel' => 1,
+        'iconfile' => 'EXT:core/Resources/Public/Icons/T3Icons/apps/apps-filetree-folder-default.svg',
         'default_sortby' => 'crdate DESC',
         'security' => [
             'ignoreWebMountRestriction' => true,
