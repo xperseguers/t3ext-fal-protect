@@ -55,8 +55,7 @@ class ResourceStorage
      */
     public function postFolderMove(Folder $folder, Folder $targetFolder, string $newName, Folder $originalFolder): void
     {
-        $newIdentifier = $targetFolder->getIdentifier() . $newName . '/';
-        $newFolder = $targetFolder->getStorage()->getFolder($newIdentifier);
+        $newFolder = $targetFolder->getSubfolder($newName);
         $this->folderRepository->moveRestrictions($folder, $newFolder);
     }
 
@@ -66,8 +65,7 @@ class ResourceStorage
      * @param $newName
      */
     public function postFolderCopy(Folder $folder, Folder $targetFolder, string $newName): void {
-        $newIdentifier = $targetFolder->getIdentifier() . $newName . '/';
-        $newFolder = $targetFolder->getStorage()->getFolder($newIdentifier);
+        $newFolder = $targetFolder->getSubfolder($newName);
         $this->folderRepository->copyRestrictions($folder, $newFolder);
     }
 
