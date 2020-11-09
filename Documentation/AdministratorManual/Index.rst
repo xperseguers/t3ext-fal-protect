@@ -59,9 +59,48 @@ or, if that better fits your setup, like that:
        rewrite ^(.+)$ /index.php last;
    }
 
-.. note::
 
-   By design, the "_processed_" folder (:file:`/fileadmin/_processed_/`) is not protected and its content (thumbnails or
-   resized/cropped images) is always freely accessible. The rules above exclude this directory from useless processing
-   by TYPO3 but even if you ask to process absolutely everything by this extension, files within the "_processed_"
-   folder are always public.
+.. _admin-manual-security-considerations:
+
+Security considerations
+-----------------------
+
+By design, the "_processed_" folder (:file:`/fileadmin/_processed_/`) is not protected and its content (thumbnails or
+resized/cropped images) is always freely accessible. The rules above exclude this directory from useless processing by
+TYPO3 but even if you ask to process absolutely everything by this extension, files within the "_processed_" folder are
+always public.
+
+
+Recycler
+^^^^^^^^
+
+TYPO3 supports the concept of a recycler folder where deleted files will automatically land, if that folder exists:
+
+.. image:: ../Images/recycler.png
+   :alt: Recycler directory
+   :align: center
+
+You may create as many recycler folder as you want by simply creating new folders with the name ``_recycler_``. The
+behaviour is that any deleted file will land in the "nearest" recycler folder.
+
+As such, a protected file *may* land at a higher level in the folder structure and thus be suddenly publicly available.
+
+We think that files within a recycler folder should never be publicly accessible and would suggest administrators to
+block direct access to any recycler folder at the server level (taken from the suggested configuration for TYPO3):
+
+**Apache**
+
+.. code-block:: apache
+
+   RewriteRule _(?:recycler|temp)_/ - [F]
+
+**Nginx**
+
+.. code-block:: nginx
+
+   # Restrict access to deleted files in Recycler directories
+   location ~ ^/fileadmin/(.*/)?_recycler_/ {
+     deny all;
+     access_log off;
+     log_not_found off;
+   }
