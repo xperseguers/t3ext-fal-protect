@@ -104,7 +104,7 @@ automatically land, if that folder exists:
    :align: center
    :class: with-border with-shadow
 
-You may create as many recycler folder as you want by simply creating new
+You may create as many recycler folders as you want by simply creating new
 folders with the name ``_recycler_``. The behaviour is that any deleted file
 will land in the "nearest" recycler folder.
 
