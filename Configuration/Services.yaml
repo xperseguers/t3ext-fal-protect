@@ -18,8 +18,16 @@ services:
     tags:
       - name: event.listener
         identifier: 'causal/fal_protect'
+        method: 'beforeFolderCopied'
+        event: TYPO3\CMS\Core\Resource\Event\BeforeFolderCopiedEvent
+      - name: event.listener
+        identifier: 'causal/fal_protect'
         method: 'afterFolderCopied'
         event: TYPO3\CMS\Core\Resource\Event\AfterFolderCopiedEvent
+      - name: event.listener
+        identifier: 'causal/fal_protect'
+        method: 'beforeFolderMoved'
+        event: TYPO3\CMS\Core\Resource\Event\BeforeFolderMovedEvent
       - name: event.listener
         identifier: 'causal/fal_protect'
         method: 'afterFolderMoved'
@@ -32,6 +40,10 @@ services:
         identifier: 'causal/fal_protect'
         method: 'afterFolderRenamed'
         event: TYPO3\CMS\Core\Resource\Event\AfterFolderRenamedEvent
+      - name: event.listener
+        identifier: 'causal/fal_protect'
+        method: 'beforeFolderDeleted'
+        event: TYPO3\CMS\Core\Resource\Event\BeforeFolderDeletedEvent
       - name: event.listener
         identifier: 'causal/fal_protect'
         method: 'afterFolderDeleted'

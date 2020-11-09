@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace Causal\FalProtect\Slots;
 
 use Causal\FalProtect\Domain\Repository\FolderRepository;
+use Causal\FalProtect\Traits\UpdateSubfoldersTrait;
 use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -30,15 +31,12 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class ResourceStorage implements SingletonInterface
 {
 
+    use UpdateSubfoldersTrait;
+
     /**
      * @var Folder
      */
     protected $previousFolder;
-
-    /**
-     * @var FolderRepository
-     */
-    protected $folderRepository;
 
     /**
      * ResourceStorage constructor.
@@ -51,12 +49,33 @@ class ResourceStorage implements SingletonInterface
     /**
      * @param Folder $folder
      * @param Folder $targetFolder
+     * @param string $newName
+     */
+    public function preFolderCopy(Folder $folder, Folder $targetFolder, string $newName): void
+    {
+        $this->populatePreviousFolderMapping($folder);
+    }
+
+    /**
+     * @param Folder $folder
+     * @param Folder $targetFolder
      * @param $newName
      */
     public function postFolderCopy(Folder $folder, Folder $targetFolder, string $newName): void
     {
         $newFolder = $targetFolder->getSubfolder($newName);
         $this->folderRepository->copyRestrictions($folder, $newFolder);
+        $this->copyRestrictionsFromSubfolders($folder, $newFolder);
+    }
+
+    /**
+     * @param Folder $folder
+     * @param Folder $targetFolder
+     * @param string $newName
+     */
+    public function preFolderMove(Folder $folder, Folder $targetFolder, string $newName): void
+    {
+        $this->populatePreviousFolderMapping($folder);
     }
 
     /**
@@ -69,6 +88,7 @@ class ResourceStorage implements SingletonInterface
     {
         $newFolder = $targetFolder->getSubfolder($newName);
         $this->folderRepository->moveRestrictions($folder, $newFolder);
+        $this->moveRestrictionsFromSubfolders($folder, $newFolder);
     }
 
     /**
@@ -78,6 +98,7 @@ class ResourceStorage implements SingletonInterface
     public function preFolderRename(Folder $folder, string $newName): void
     {
         $this->previousFolder = $folder;
+        $this->populatePreviousFolderMapping($folder);
     }
 
     /**
@@ -92,6 +113,15 @@ class ResourceStorage implements SingletonInterface
             $folder = $folder->getStorage()->getFolder($newIdentifier);
         }
         $this->folderRepository->moveRestrictions($this->previousFolder, $folder);
+        $this->moveRestrictionsFromSubfolders($this->previousFolder, $folder);
+    }
+
+    /**
+     * @param Folder $folder
+     */
+    public function preFolderDelete(Folder $folder): void
+    {
+        $this->populatePreviousFolderMapping($folder);
     }
 
     /**
@@ -100,6 +130,7 @@ class ResourceStorage implements SingletonInterface
     public function postFolderDelete(Folder $folder): void
     {
         $this->folderRepository->deleteRestrictions($folder);
+        $this->deleteRestrictionsFromSubfolders($folder);
     }
 
 }

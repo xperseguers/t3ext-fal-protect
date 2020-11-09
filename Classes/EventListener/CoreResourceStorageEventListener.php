@@ -17,10 +17,14 @@ declare(strict_types=1);
 namespace Causal\FalProtect\EventListener;
 
 use Causal\FalProtect\Domain\Repository\FolderRepository;
+use Causal\FalProtect\Traits\UpdateSubfoldersTrait;
 use TYPO3\CMS\Core\Resource\Event\AfterFolderCopiedEvent;
 use TYPO3\CMS\Core\Resource\Event\AfterFolderDeletedEvent;
 use TYPO3\CMS\Core\Resource\Event\AfterFolderMovedEvent;
 use TYPO3\CMS\Core\Resource\Event\AfterFolderRenamedEvent;
+use TYPO3\CMS\Core\Resource\Event\BeforeFolderCopiedEvent;
+use TYPO3\CMS\Core\Resource\Event\BeforeFolderDeletedEvent;
+use TYPO3\CMS\Core\Resource\Event\BeforeFolderMovedEvent;
 use TYPO3\CMS\Core\Resource\Event\BeforeFolderRenamedEvent;
 use TYPO3\CMS\Core\Resource\Folder;
 
@@ -31,15 +35,12 @@ use TYPO3\CMS\Core\Resource\Folder;
 class CoreResourceStorageEventListener
 {
 
+    use UpdateSubfoldersTrait;
+
     /**
      * @var Folder
      */
     protected $previousFolder;
-
-    /**
-     * @var FolderRepository
-     */
-    protected $folderRepository;
 
     /**
      * CoreResourceStorageEventListener constructor.
@@ -52,6 +53,16 @@ class CoreResourceStorageEventListener
     }
 
     /**
+     * A folder is getting copied.
+     *
+     * @param BeforeFolderCopiedEvent $event
+     */
+    public function beforeFolderCopied(BeforeFolderCopiedEvent $event): void
+    {
+        $this->populatePreviousFolderMapping($event->getFolder());
+    }
+
+    /**
      * A folder has been copied.
      *
      * @param AfterFolderCopiedEvent $event
@@ -59,6 +70,17 @@ class CoreResourceStorageEventListener
     public function afterFolderCopied(AfterFolderCopiedEvent $event): void
     {
         $this->folderRepository->copyRestrictions($event->getFolder(), $event->getTargetFolder());
+        $this->copyRestrictionsFromSubfolders($event->getFolder(), $event->getTargetFolder());
+    }
+
+    /**
+     * A folder is getting moved.
+     *
+     * @param BeforeFolderMovedEvent $event
+     */
+    public function beforeFolderMoved(BeforeFolderMovedEvent $event): void
+    {
+        $this->populatePreviousFolderMapping($event->getFolder());
     }
 
     /**
@@ -69,6 +91,7 @@ class CoreResourceStorageEventListener
     public function afterFolderMoved(AfterFolderMovedEvent $event): void
     {
         $this->folderRepository->moveRestrictions($event->getFolder(), $event->getTargetFolder());
+        $this->moveRestrictionsFromSubfolders($event->getFolder(), $event->getTargetFolder());
     }
 
     /**
@@ -79,6 +102,7 @@ class CoreResourceStorageEventListener
     public function beforeFolderRenamed(BeforeFolderRenamedEvent $event): void
     {
         $this->previousFolder = $event->getFolder();
+        $this->populatePreviousFolderMapping($event->getFolder());
     }
 
     /**
@@ -89,6 +113,17 @@ class CoreResourceStorageEventListener
     public function afterFolderRenamed(AfterFolderRenamedEvent $event): void
     {
         $this->folderRepository->moveRestrictions($this->previousFolder, $event->getFolder());
+        $this->moveRestrictionsFromSubfolders($this->previousFolder, $event->getFolder());
+    }
+
+    /**
+     * A folder is getting deleted.
+     *
+     * @param BeforeFolderDeletedEvent $event
+     */
+    public function beforeFolderDeleted(BeforeFolderDeletedEvent $event): void
+    {
+        $this->populatePreviousFolderMapping($event->getFolder());
     }
 
     /**
@@ -99,6 +134,7 @@ class CoreResourceStorageEventListener
     public function afterFolderDeleted(AfterFolderDeletedEvent $event): void
     {
         $this->folderRepository->deleteRestrictions($event->getFolder());
+        $this->deleteRestrictionsFromSubfolders($event->getFolder());
     }
 
 }
