@@ -51,31 +51,24 @@ class ResourceStorage implements SingletonInterface
     /**
      * @param Folder $folder
      * @param Folder $targetFolder
-     * @param string $newName
-     * @param Folder $originalFolder
-     */
-    public function postFolderMove(Folder $folder, Folder $targetFolder, string $newName, Folder $originalFolder): void
-    {
-        $newFolder = $targetFolder->getSubfolder($newName);
-        $this->folderRepository->moveRestrictions($folder, $newFolder);
-    }
-
-    /**
-     * @param Folder $folder
-     * @param Folder $targetFolder
      * @param $newName
      */
-    public function postFolderCopy(Folder $folder, Folder $targetFolder, string $newName): void {
+    public function postFolderCopy(Folder $folder, Folder $targetFolder, string $newName): void
+    {
         $newFolder = $targetFolder->getSubfolder($newName);
         $this->folderRepository->copyRestrictions($folder, $newFolder);
     }
 
     /**
      * @param Folder $folder
+     * @param Folder $targetFolder
+     * @param string $newName
+     * @param Folder $originalParentFolder
      */
-    public function postFolderDelete(Folder $folder): void
+    public function postFolderMove(Folder $folder, Folder $targetFolder, string $newName, Folder $originalParentFolder): void
     {
-        $this->folderRepository->deleteRestrictions($folder);
+        $newFolder = $targetFolder->getSubfolder($newName);
+        $this->folderRepository->moveRestrictions($folder, $newFolder);
     }
 
     /**
@@ -99,6 +92,14 @@ class ResourceStorage implements SingletonInterface
             $folder = $folder->getStorage()->getFolder($newIdentifier);
         }
         $this->folderRepository->moveRestrictions($this->previousFolder, $folder);
+    }
+
+    /**
+     * @param Folder $folder
+     */
+    public function postFolderDelete(Folder $folder): void
+    {
+        $this->folderRepository->deleteRestrictions($folder);
     }
 
 }
