@@ -18,6 +18,7 @@ namespace Causal\FalProtect\Slots;
 
 use Causal\FalProtect\Domain\Repository\FolderRepository;
 use TYPO3\CMS\Core\Resource\Folder;
+use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -26,13 +27,13 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Class ResourceStorage
  * @package Causal\FalProtect\Slots
  */
-class ResourceStorage
+class ResourceStorage implements SingletonInterface
 {
 
     /**
      * @var Folder
      */
-    protected static $previousFolder;
+    protected $previousFolder;
 
     /**
      * @var FolderRepository
@@ -83,7 +84,7 @@ class ResourceStorage
      */
     public function preFolderRename(Folder $folder, string $newName): void
     {
-        static::$previousFolder = $folder;
+        $this->previousFolder = $folder;
     }
 
     /**
@@ -92,12 +93,12 @@ class ResourceStorage
      */
     public function postFolderRename(Folder $folder, string $newName): void
     {
-        if ($folder->getIdentifier() === static::$previousFolder->getIdentifier()) {
+        if ($folder->getIdentifier() === $this->previousFolder->getIdentifier()) {
             // This is a known bug: https://forge.typo3.org/issues/92790
             $newIdentifier = dirname($folder->getIdentifier()) . '/' . $newName . '/';
             $folder = $folder->getStorage()->getFolder($newIdentifier);
         }
-        $this->folderRepository->moveRestrictions(static::$previousFolder, $folder);
+        $this->folderRepository->moveRestrictions($this->previousFolder, $folder);
     }
 
 }
