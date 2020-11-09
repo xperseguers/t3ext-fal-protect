@@ -18,6 +18,7 @@ namespace Causal\FalProtect\ContextMenu\ItemProviders;
 
 use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Resource\FolderInterface;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class FileProvider
@@ -46,8 +47,10 @@ class FileProvider extends \TYPO3\CMS\Filelist\ContextMenu\ItemProviders\FilePro
     {
         if ($this->isFolder()) {
             return $this->record->getStorage()->isDefault()
+                && $this->record->checkActionPermission('write')
                 && $this->record->getRole() !== FolderInterface::ROLE_TEMPORARY
-                && $this->record->getRole() !== FolderInterface::ROLE_RECYCLER;
+                && $this->record->getRole() !== FolderInterface::ROLE_RECYCLER
+                && $this->canEditFolder();
         } else {
             return $this->isFile()
                 && $this->record->checkActionPermission('write')
@@ -70,6 +73,29 @@ class FileProvider extends \TYPO3\CMS\Filelist\ContextMenu\ItemProviders\FilePro
         }
 
         return $attributes;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function canEditFolder(): bool
+    {
+        /** @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser */
+        $backendUser = $GLOBALS['BE_USER'];
+
+        if ($backendUser->isAdmin()
+            || !($GLOBALS['TCA']['tx_falprotect_folder']['columns']['fe_groups']['exclude'] ?? false)) {
+            return true;
+        }
+
+        if (isset($backendUser->groupData['non_exclude_fields'])) {
+            $nonExcludeFieldsArray = array_flip(GeneralUtility::trimExplode(',', $backendUser->groupData['non_exclude_fields']));
+            if (isset($nonExcludeFieldsArray['tx_falprotect_folder:fe_groups'])) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }

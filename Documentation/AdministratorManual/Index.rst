@@ -56,6 +56,31 @@ or, if that better fits your setup, like that:
    }
 
 
+.. _admin-manual-exclude-fields:
+
+Access to exclude fields
+------------------------
+
+In order for your editors to edit protection on folders, make sure they are
+granted access to the ``fe_groups`` field for Folder (``tx_falprotect_folder``):
+
+.. image:: ../Images/excludefields-folder.png
+   :alt: Granting access to updating folder permissions
+   :align: center
+   :class: with-border with-shadow
+
+Similarly, editing protection on files requires access to following exclude
+fields of File Metadata (``sys_file_metadata``):
+
+- Visible (``visible``)
+- Start (``starttime``)
+- Stop (``endtime``)
+- Access (``fe_groups``)
+
+In addition, make sure to allow "modify" access on both tables
+``tx_falprotect_folder`` and ``sys_file_metadata``.
+
+
 .. _admin-manual-security-considerations:
 
 Security considerations
