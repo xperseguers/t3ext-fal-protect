@@ -20,6 +20,10 @@ CREATE TABLE tx_falprotect_folder
 #
 CREATE TABLE sys_file_metadata
 (
+    visible int(11) unsigned DEFAULT '1',
     starttime int(11) unsigned DEFAULT '0' NOT NULL,
-    endtime   int(11) unsigned DEFAULT '0' NOT NULL
+    endtime   int(11) unsigned DEFAULT '0' NOT NULL,
+
+    # FE permissions
+    fe_groups tinytext
 );

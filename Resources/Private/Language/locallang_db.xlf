@@ -6,6 +6,9 @@
             <trans-unit id="clickmenu.folderPermissions">
                 <source>Folder permissions</source>
             </trans-unit>
+            <trans-unit id="sys_file_metadata.visible">
+                <source>Visible</source>
+            </trans-unit>
         </body>
     </file>
 </xliff>
