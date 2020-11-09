@@ -33,7 +33,8 @@ class FileProvider extends \TYPO3\CMS\Filelist\ContextMenu\ItemProviders\FilePro
     {
         parent::initialize();
         if ($this->record instanceof Folder) {
-            $this->itemsConfiguration['edit']['iconIdentifier'] = 'actions-open';
+            $this->itemsConfiguration['edit']['label'] = 'LLL:EXT:fal_protect/Resources/Private/Language/locallang_db.xlf:clickmenu.folderPermissions';
+            $this->itemsConfiguration['edit']['iconIdentifier'] = 'actions-protect-folder';
             $this->itemsConfiguration['edit']['callbackAction'] = 'editFolder';
         }
     }
