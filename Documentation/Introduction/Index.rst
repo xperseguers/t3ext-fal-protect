@@ -54,11 +54,14 @@ We have found two similar extensions with their own differences to this
 extensions:
 
 1. `fal_securedownload <https://extensions.typo3.org/extension/fal_securedownload/>`__:
+
    - is not compatible with TYPO3 v9;
    - changes the download URL (using the ``eID`` concept);
    - provides Frontend-related components (a File tree JS component);
    - is able to keep track of a count of downloads.
+
 2. `secure_downloads <https://extensions.typo3.org/extension/secure_downloads/>`__:
+
    - requires relatively complex configuration at the server level and as
      administrator in TYPO3 Backend;
    - changes the download URL;
