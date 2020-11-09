@@ -14,51 +14,50 @@ FAL Protect
 
 .. only:: html
 
+   :Classification:
+      fal_protect
 
-    :Classification:
-        fal_protect
+   :Version:
+      |release|
 
-    :Version:
-        |release|
+   :Language:
+      en
 
-    :Language:
-        en
+   :Description:
+      Protect everything within :file:`/fileadmin/` based on associated folder and file restrictions (visibility, user
+      groups and dates of publication).
 
-    :Description:
-        Protect everything within :file:`/fileadmin/` based on associated folder and file restrictions (visibility, user
-        groups and dates of publication).
+   :Keywords:
+      FAL, files, directories, secure, security, protection
 
-    :Keywords:
-        FAL, files, directories, secure, security, protection
+   :Copyright:
+      2020
 
-    :Copyright:
-        2020
+   :Author:
+      Xavier Perseguers
 
-    :Author:
-        Xavier Perseguers
+   :Email:
+      xavier@causal.ch
 
-    :Email:
-        xavier@causal.ch
+   :License:
+      This document is published under the Open Publication License
+      available from https://www.opencontent.org/openpub/
 
-    :License:
-        This document is published under the Open Publication License
-        available from https://www.opencontent.org/openpub/
+   :Rendered:
+      |today|
 
-    :Rendered:
-        |today|
-
-    The content of this document is related to TYPO3,
-    a GNU/GPL CMS/Framework available from `www.typo3.org <https://typo3.org/>`__.
+   The content of this document is related to TYPO3,
+   a GNU/GPL CMS/Framework available from `www.typo3.org <https://typo3.org/>`__.
 
 
-    **Table of Contents**
+   **Table of Contents**
 
 .. toctree::
-    :maxdepth: 3
-    :titlesonly:
+   :maxdepth: 3
+   :titlesonly:
 
-    Introduction/Index
-    UsersManual/Index
-    AdministratorManual/Index
-    KnownProblems/Index
-    Links
+   Introduction/Index
+   UsersManual/Index
+   AdministratorManual/Index
+   KnownProblems/Index
+   Links

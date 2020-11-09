@@ -12,19 +12,19 @@ Links
 -----
 
 :TER:
-	https://extensions.typo3.org/extension/fal_protect
+   https://extensions.typo3.org/extension/fal_protect
 
 :Packagist:
-	https://packagist.org/packages/causal/fal-protect
+   https://packagist.org/packages/causal/fal-protect
 
 :Bug Tracker:
-	https://github.com/xperseguers/t3ext-fal-protect/issues
+   https://github.com/xperseguers/t3ext-fal-protect/issues
 
 :Git Repository:
-	https://github.com/xperseguers/t3ext-fal-protect
+   https://github.com/xperseguers/t3ext-fal-protect
 
 :Contact:
-	`@xperseguers <https://twitter.com/xperseguers>`__
+   `@xperseguers <https://twitter.com/xperseguers>`__
 
 
 .. _links-how-to-contribute:

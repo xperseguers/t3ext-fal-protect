@@ -46,9 +46,9 @@ Edit your ``server`` block to read:
 .. code-block:: nginx
 
    location / {
-       rewrite ^/fileadmin/(?!(_processed_/)) /index.php last;
+     rewrite ^/fileadmin/(?!(_processed_/)) /index.php last;
 
-       # snip
+     # snip
    }
 
 or, if that better fits your setup, like that:
@@ -56,7 +56,7 @@ or, if that better fits your setup, like that:
 .. code-block:: nginx
 
    location ~ /fileadmin/(?!(_processed_/)) {
-       rewrite ^(.+)$ /index.php last;
+     rewrite ^(.+)$ /index.php last;
    }
 
 
