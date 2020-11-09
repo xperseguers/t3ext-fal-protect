@@ -24,12 +24,14 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Http\ImmediateResponseException;
 use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Http\Stream;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
+use TYPO3\CMS\Frontend\Controller\ErrorController;
 
 /**
  * Class FileMiddleware
@@ -59,7 +61,7 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
             $fileIdentifier = substr($target, strlen($fileadminDir));
 
             if (!$defaultStorage->hasFile($fileIdentifier)) {
-                return $response->withStatus(404, 'Not Found');
+                $this->pageNotFoundAction($request);
             }
 
             $frontendUser = version_compare((new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch(), '10.4', '<')
@@ -69,7 +71,7 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
             $file = $defaultStorage->getFile($fileIdentifier);
             $maxAge = 14400;    // TODO: make this somehow configurable?
             if (!$this->isFileAccessible($file, $frontendUser, $maxAge)) {
-                return $response->withStatus(404, 'Not Found');
+                $this->pageNotFoundAction($request);
             }
 
             $fileName = $file->getForLocalProcessing(false);
@@ -155,6 +157,13 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
         }
 
         return false;
+    }
+
+    protected function pageNotFoundAction(ServerRequestInterface $request, string $message = 'Not Found'): void
+    {
+        $response = GeneralUtility::makeInstance(ErrorController::class)->pageNotFoundAction($request, $message);
+
+        throw new ImmediateResponseException($response, 1604918043);
     }
 
 }
