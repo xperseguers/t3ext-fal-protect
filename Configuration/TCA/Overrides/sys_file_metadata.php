@@ -91,3 +91,4 @@ $GLOBALS['TCA']['sys_file_metadata']['palettes']['access'] = [
 foreach ($GLOBALS['TCA']['sys_file_metadata']['types'] as &$configuration) {
     $configuration['showitem'] = str_replace('fe_groups,', '--palette--;;access,', $configuration['showitem']);
 }
+unset($configuration);
