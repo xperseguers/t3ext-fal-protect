@@ -36,6 +36,10 @@ call_user_func(function(string $_EXTKEY) {
         }
     }
 
+    // Add folder permission button to docheader of filelist
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['Backend\Template\Components\ButtonBar']['getButtonsHook'][] =
+        \Causal\FalProtect\Hooks\ButtonBarHook::class . '->getButtons';
+
     // Refresh the file tree after updating permissions on a folder
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] =
         \Causal\FalProtect\Hooks\DataHandler::class;
