@@ -22,7 +22,6 @@ use Causal\FalProtect\Service\SecurityService;
 use function count;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Template\Components\ButtonBar;
-use TYPO3\CMS\Core\Exception;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Localization\LanguageService;
@@ -39,10 +38,9 @@ class ButtonBarHook
 
     public function __construct()
     {
-        try {
+        if (GeneralUtility::_GET('route') === '/module/file/FilelistList') {
             $this->folder = GeneralUtility::makeInstance(ResourceFactory::class)
                 ->retrieveFileOrFolderObject((string)GeneralUtility::_GP('id'));
-        } catch (Exception $exception) {
         }
     }
 
