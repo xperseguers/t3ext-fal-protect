@@ -76,22 +76,34 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
 
             $fileName = $file->getForLocalProcessing(false);
 
-            $response = $response
-                ->withHeader('Content-Type', $file->getMimeType())
-                ->withHeader('Content-Length', (string)$file->getSize());
-
+            /**
+             * Note: we cannot return a standard PSR response as
+             * @see \TYPO3\CMS\Core\Http\AbstractApplication::sendResponse()
+             * will load all the content into memory using $body->__toString()
+             */
+            header('Content-Type: ' . $file->getMimeType());
+            header('Content-Length: ' . (string)$file->getSize());
             if ($maxAge > 0) {
-                $response = $response->withHeader('Cache-Control', 'public, max-age=' . $maxAge);
+                header('Cache-Control: public, max-age=' . $maxAge);
             } else {
-                $response = $response
-                    ->withHeader('Cache-Control', [
-                        'no-store, no-cache, must-revalidate, max-age=0',
-                        'post-check=0, pre-check=0',
-                    ])
-                    ->withHeader('Pragma', 'no-cache');
+                header('Cache-Control: ' . implode(', ', [
+                    'no-store',
+                    'no-cache',
+                    'must-revalidate',
+                    'max-age=0',
+                    'post-check=0',
+                    'pre-check=0',
+                ]));
+                header('Pragma: no-cache');
             }
 
-            return $response->withBody(new Stream($fileName));
+            if (ob_get_level()) {
+                ob_end_clean();
+            }
+            flush();
+
+            readfile($fileName);
+            exit;
         }
 
         return $handler->handle($request);
