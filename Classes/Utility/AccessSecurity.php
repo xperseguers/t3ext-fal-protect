@@ -33,7 +33,7 @@ class AccessSecurity
     /**
      * Returns TRUE if the folder is accessible by the Frontend user.
      *
-     * @param Folder $folder
+     * @param FolderInterface $folder
      * @return bool
      */
     public static function isFolderAccessible(FolderInterface $folder): bool
