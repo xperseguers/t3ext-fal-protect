@@ -19,6 +19,8 @@ namespace Causal\FalProtect\Utility;
 use Causal\FalProtect\Domain\Repository\FolderRepository;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Resource\FileInterface;
+use TYPO3\CMS\Core\Resource\Folder;
+use TYPO3\CMS\Core\Resource\FolderInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -27,6 +29,33 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class AccessSecurity
 {
+
+    /**
+     * Returns TRUE if the folder is accessible by the Frontend user.
+     *
+     * @param Folder $folder
+     * @return bool
+     */
+    public static function isFolderAccessible(FolderInterface $folder): bool
+    {
+        $frontendUserAspect = GeneralUtility::makeInstance(Context::class)->getAspect('frontend.user');
+        $userGroups = $frontendUserAspect->getGroupIds();
+
+        // Check access restrictions on folders up to the root
+        // InsufficientFolderAccessPermissionsException does not seem to be throwable in that context
+        $folderRepository = GeneralUtility::makeInstance(FolderRepository::class);
+        while ($folder->getIdentifier() !== '/') {
+            $record = $folderRepository->findOneByObject($folder, false);
+            $accessGroups = GeneralUtility::intExplode(',', $record['fe_groups'] ?? '', true);
+            if (!empty($accessGroups) && empty(array_intersect($accessGroups, $userGroups))) {
+                // Access denied
+                return false;
+            }
+            $folder = $folder->getParentFolder();
+        }
+
+        return true;
+    }
 
     /**
      * Returns TRUE if the file is accessible by the Frontend user.
@@ -40,18 +69,8 @@ class AccessSecurity
         $frontendUserAspect = GeneralUtility::makeInstance(Context::class)->getAspect('frontend.user');
         $userGroups = $frontendUserAspect->getGroupIds();
 
-        // Check access restrictions on folders up to the root
-        // InsufficientFolderAccessPermissionsException does not seem to be throwable in that context
-        $folder = $file->getParentFolder();
-        $folderRepository = GeneralUtility::makeInstance(FolderRepository::class);
-        while ($folder->getIdentifier() !== '/') {
-            $record = $folderRepository->findOneByObject($folder, false);
-            $accessGroups = GeneralUtility::intExplode(',', $record['fe_groups'] ?? '', true);
-            if (!empty($accessGroups) && empty(array_intersect($accessGroups, $userGroups))) {
-                // Access denied
-                return false;
-            }
-            $folder = $folder->getParentFolder();
+        if (!static::isFolderAccessible($file->getParentFolder())) {
+            return false;
         }
 
         $isVisible = $file->hasProperty('visible') ? (bool)$file->getProperty('visible') : true;

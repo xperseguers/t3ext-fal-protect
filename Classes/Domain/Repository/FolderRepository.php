@@ -18,6 +18,7 @@ namespace Causal\FalProtect\Domain\Repository;
 
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Resource\Folder;
+use TYPO3\CMS\Core\Resource\FolderInterface;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -34,11 +35,11 @@ class FolderRepository implements SingletonInterface
     public $tableName = 'tx_falprotect_folder';
 
     /**
-     * @param Folder $folder
+     * @param FolderInterface $folder
      * @param bool $createIfNotExisting
      * @return array|null
      */
-    public function findOneByObject(Folder $folder, bool $createIfNotExisting = true): ?array
+    public function findOneByObject(FolderInterface $folder, bool $createIfNotExisting = true): ?array
     {
         $record = $this->findOneByStorageAndHashedIdentifier(
             $folder->getStorage()->getUid(),
@@ -148,11 +149,11 @@ class FolderRepository implements SingletonInterface
     /**
      * Creates a folder record.
      *
-     * @param Folder $folder
+     * @param FolderInterface $folder
      * @param string|null $feGroups
      * @return array
      */
-    protected function createFolder(Folder $folder, ?string $feGroups = null): array
+    protected function createFolder(FolderInterface $folder, ?string $feGroups = null): array
     {
         return $this->createFolderRecord(
             $folder->getStorage()->getUid(),
