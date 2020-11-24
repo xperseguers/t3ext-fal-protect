@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace Causal\FalProtect\Middleware;
 
 use Causal\FalProtect\Domain\Repository\FolderRepository;
+use Causal\FalProtect\Utility\AccessSecurity;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -129,46 +130,7 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
         // to be as lightweight as possible:
         $user->fetchGroupData();
 
-        $frontendUserAspect = GeneralUtility::makeInstance(Context::class)->getAspect('frontend.user');
-        $userGroups = $frontendUserAspect->getGroupIds();
-
-        // Check access restrictions on folders up to the root
-        // InsufficientFolderAccessPermissionsException does not seem to be throwable in that context
-        $folder = $file->getParentFolder();
-        $folderRepository = GeneralUtility::makeInstance(FolderRepository::class);
-        while ($folder->getIdentifier() !== '/') {
-            $record = $folderRepository->findOneByObject($folder, false);
-            $accessGroups = GeneralUtility::intExplode(',', $record['fe_groups'] ?? '', true);
-            if (!empty($accessGroups) && empty(array_intersect($accessGroups, $userGroups))) {
-                // Access denied
-                return false;
-            }
-            $folder = $folder->getParentFolder();
-        }
-
-        $isVisible = $file->hasProperty('visible') ? (bool)$file->getProperty('visible') : true;
-        if ($isVisible) {
-            $startTime = $file->getProperty('starttime');
-            $endTime = $file->getProperty('endtime');
-            if (($startTime > 0 && $startTime > $GLOBALS['SIM_ACCESS_TIME'])
-                || ($endTime > 0 && $endTime < $GLOBALS['SIM_ACCESS_TIME'])) {
-                return false;
-            }
-
-            $accessGroups = $file->getProperty('fe_groups');
-            if (empty($accessGroups)) {
-                return true;
-            }
-
-            $accessGroups = GeneralUtility::intExplode(',', $accessGroups, true);
-            if (!empty(array_intersect($accessGroups, $userGroups))) {
-                // Prevent caching by a CDN or another kind of proxy
-                $maxAge = 0;
-                return true;
-            }
-        }
-
-        return false;
+        return AccessSecurity::isFileAccessible($file, $maxAge);
     }
 
     protected function pageNotFoundAction(ServerRequestInterface $request, string $message = 'Not Found'): void
