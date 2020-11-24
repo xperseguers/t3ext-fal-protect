@@ -66,12 +66,12 @@ class AccessSecurity
      */
     public static function isFileAccessible(FileInterface $file, int &$maxAge = 0): bool
     {
-        $frontendUserAspect = GeneralUtility::makeInstance(Context::class)->getAspect('frontend.user');
-        $userGroups = $frontendUserAspect->getGroupIds();
-
         if (!static::isFolderAccessible($file->getParentFolder())) {
             return false;
         }
+
+        $frontendUserAspect = GeneralUtility::makeInstance(Context::class)->getAspect('frontend.user');
+        $userGroups = $frontendUserAspect->getGroupIds();
 
         $isVisible = $file->hasProperty('visible') ? (bool)$file->getProperty('visible') : true;
         if ($isVisible) {
