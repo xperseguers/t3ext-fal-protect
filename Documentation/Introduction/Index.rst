@@ -55,8 +55,8 @@ extensions:
 
 1. `fal_securedownload <https://extensions.typo3.org/extension/fal_securedownload/>`__:
 
-   - is not compatible with TYPO3 v9;
-   - changes the download URL (using the ``eID`` concept);
+   - changes the download URL (using the ``eID`` concept from TYPO3 core, non-public storages);
+   - only file links from non-public (protected) storages go through security proxy
    - provides Frontend-related components (a File tree JS component);
    - is able to keep track of a count of downloads.
 
