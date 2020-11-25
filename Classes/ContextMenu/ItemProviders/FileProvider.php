@@ -16,55 +16,19 @@ declare(strict_types=1);
 
 namespace Causal\FalProtect\ContextMenu\ItemProviders;
 
-use TYPO3\CMS\Core\Resource\Folder;
-use TYPO3\CMS\Core\Resource\FolderInterface;
+use Causal\FalProtect\Service\SecurityService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
- * Class FileProvider
- * @package Causal\FalProtect\ContextMenu\ItemProviders
- */
 class FileProvider extends \TYPO3\CMS\Filelist\ContextMenu\ItemProviders\FileProvider
 {
-
-    /**
-     * Initialize file object
-     */
-    protected function initialize()
-    {
-        parent::initialize();
-        if ($this->record instanceof Folder) {
-            $this->itemsConfiguration['edit']['label'] = 'LLL:EXT:fal_protect/Resources/Private/Language/locallang_db.xlf:clickmenu.folderPermissions';
-            $this->itemsConfiguration['edit']['iconIdentifier'] = 'actions-protect-folder';
-            $this->itemsConfiguration['edit']['callbackAction'] = 'editFolder';
-        }
-    }
-
-    /**
-     * @return bool
-     */
     protected function canBeEdited(): bool
     {
-        if ($this->isFolder()) {
-            return $this->record->getStorage()->isDefault()
-                && $this->record->checkActionPermission('write')
-                && $this->record->getRole() !== FolderInterface::ROLE_TEMPORARY
-                && $this->record->getRole() !== FolderInterface::ROLE_RECYCLER
-                && $this->canEditFolder();
-        } else {
-            return $this->isFile()
-                && $this->record->checkActionPermission('write')
-                && $this->record->isTextFile();
-        }
+        return GeneralUtility::makeInstance(SecurityService::class)->canBeEdited($this->record);
     }
 
-    /**
-     * @param string $itemName
-     * @return array
-     */
     protected function getAdditionalAttributes(string $itemName): array
     {
-        if ($itemName === 'edit' && $this->isFolder()) {
+        if ($itemName === 'edit' && $this->isFolder() === true) {
             $attributes = [
                 'data-callback-module' => 'TYPO3/CMS/FalProtect/ContextMenuActions'
             ];
@@ -75,27 +39,15 @@ class FileProvider extends \TYPO3\CMS\Filelist\ContextMenu\ItemProviders\FilePro
         return $attributes;
     }
 
-    /**
-     * @return bool
-     */
-    protected function canEditFolder(): bool
+    protected function initialize(): void
     {
-        /** @var \TYPO3\CMS\Core\Authentication\BackendUserAuthentication $backendUser */
-        $backendUser = $GLOBALS['BE_USER'];
+        parent::initialize();
 
-        if ($backendUser->isAdmin()
-            || !($GLOBALS['TCA']['tx_falprotect_folder']['columns']['fe_groups']['exclude'] ?? false)) {
-            return true;
+        if ($this->isFolder() === true) {
+            $this->itemsConfiguration['edit']['callbackAction'] = 'editFolder';
+            $this->itemsConfiguration['edit']['iconIdentifier'] = 'actions-protect-folder';
+            $this->itemsConfiguration['edit']['label'] =
+                'LLL:EXT:fal_protect/Resources/Private/Language/locallang_db.xlf:clickmenu.folderPermissions';
         }
-
-        if (isset($backendUser->groupData['non_exclude_fields'])) {
-            $nonExcludeFieldsArray = array_flip(GeneralUtility::trimExplode(',', $backendUser->groupData['non_exclude_fields']));
-            if (isset($nonExcludeFieldsArray['tx_falprotect_folder:fe_groups'])) {
-                return true;
-            }
-        }
-
-        return false;
     }
-
 }
