@@ -1,8 +1,7 @@
 <?php
 defined('TYPO3_MODE') || die();
 
-call_user_func(function(string $_EXTKEY) {
-
+(static function (string $_EXTKEY) {
     $typo3Branch = class_exists(\TYPO3\CMS\Core\Information\Typo3Version::class)
         ? (new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch()
         : TYPO3_branch;
@@ -55,5 +54,4 @@ call_user_func(function(string $_EXTKEY) {
         options.saveDocNew.tx_falprotect_folder = 0
         options.disableDelete.tx_falprotect_folder = 1
     ');
-
-}, 'fal_protect');
+})('fal_protect');
