@@ -51,11 +51,9 @@ class FileProvider extends \TYPO3\CMS\Filelist\ContextMenu\ItemProviders\FilePro
                 && $this->record->getRole() !== FolderInterface::ROLE_TEMPORARY
                 && $this->record->getRole() !== FolderInterface::ROLE_RECYCLER
                 && $this->canEditFolder();
-        } else {
-            return $this->isFile()
-                && $this->record->checkActionPermission('write')
-                && $this->record->isTextFile();
         }
+
+        return parent::canBeEdited();
     }
 
     /**
