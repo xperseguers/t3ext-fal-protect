@@ -2,10 +2,7 @@
 defined('TYPO3_MODE') || die();
 
 (static function (string $_EXTKEY) {
-    $typo3Branch = class_exists(\TYPO3\CMS\Core\Information\Typo3Version::class)
-        ? (new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch()
-        : TYPO3_branch;
-    if (version_compare($typo3Branch, '10.2', '<')) {
+    if (version_compare((new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch(), '10.2', '<')) {
         /** @var \TYPO3\CMS\Extbase\SignalSlot\Dispatcher $signalSlotDispatcher */
         $signalSlotDispatcher = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\SignalSlot\Dispatcher::class);
         $signalSlotDispatcher->connect(
