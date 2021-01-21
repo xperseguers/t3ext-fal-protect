@@ -24,7 +24,7 @@ FAL Protect
       FAL, files, directories, secure, security, protection
 
    :Copyright:
-      2020
+      2020-2021
 
    :Author:
       Xavier Perseguers
