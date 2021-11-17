@@ -69,9 +69,11 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
                 ? $GLOBALS['TSFE']->fe_user
                 : $request->getAttribute('frontend.user');
 
+            $validBackendUser = ($GLOBALS['BE_USER'] instanceof \TYPO3\CMS\Backend\FrontendBackendUserAuthentication && is_array($GLOBALS['BE_USER']->user));
+
             $file = $defaultStorage->getFile($fileIdentifier);
             $maxAge = 14400;    // TODO: make this somehow configurable?
-            if (!$this->isFileAccessible($file, $frontendUser, $maxAge)) {
+            if (!$this->isFileAccessible($file, $frontendUser, $maxAge) && !$validBackendUser) {
                 $this->pageNotFoundAction($request);
             }
 
