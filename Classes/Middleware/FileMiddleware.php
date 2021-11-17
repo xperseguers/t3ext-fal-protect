@@ -61,6 +61,9 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
             }
             $fileIdentifier = substr($target, strlen($fileadminDir));
 
+            // Respect encoded file names like "sonderzeichenäöü.png" with configurations like [SYS][systemLocale] = "de_DE.UTF8" && [SYS][UTF8filesystem] = "true"
+            $fileIdentifier = urldecode($fileIdentifier);
+
             if (!$defaultStorage->hasFile($fileIdentifier)) {
                 $this->pageNotFoundAction($request);
             }
