@@ -92,6 +92,10 @@ freely accessible. The rules above exclude this directory from useless
 processing by TYPO3 but even if you ask to process absolutely everything by
 this extension, files within the "_processed_" folder are always public.
 
+NOTE: Since version > 1.2.0 all ProcessedFiles are resolved to the original FAL 
+resource. As result you can also protect the "_processed_" folder, if the 
+resolution of the original file rights is correct for your purpose.
+
 
 Recycler
 ^^^^^^^^
