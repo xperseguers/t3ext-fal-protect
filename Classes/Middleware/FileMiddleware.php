@@ -69,11 +69,9 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
                 ? $GLOBALS['TSFE']->fe_user
                 : $request->getAttribute('frontend.user');
 
-            $validBackendUser = ($GLOBALS['BE_USER'] instanceof \TYPO3\CMS\Backend\FrontendBackendUserAuthentication && is_array($GLOBALS['BE_USER']->user));
-
             $file = $defaultStorage->getFile($fileIdentifier);
             $maxAge = 14400;    // TODO: make this somehow configurable?
-            if (!$this->isFileAccessible($file, $frontendUser, $maxAge) && !$validBackendUser) {
+            if (!$this->isFileAccessible($file, $frontendUser, $maxAge) && !$this->isFileAccessibleBackendUser($file)) {
                 $this->pageNotFoundAction($request);
             }
 
@@ -126,6 +124,46 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
         $user->fetchGroupData();
 
         return AccessSecurity::isFileAccessible($file, $maxAge);
+    }
+
+    /**
+     * Checks whether a given file is accessible by current authenticated backend user.
+     *
+     * @param FileInterface $file
+     * @return bool
+     */
+    protected function isFileAccessibleBackendUser(FileInterface $file): bool
+    {
+        // No BE user auth
+        if (!($GLOBALS['BE_USER'] instanceof \TYPO3\CMS\Backend\FrontendBackendUserAuthentication)) {
+            return false;
+        }
+
+        // Not logged in
+        if (!is_array($GLOBALS['BE_USER']->user)) {
+            return false;
+        }
+
+        if ($GLOBALS['BE_USER']->isAdmin()) {
+            return true;
+        }
+
+        // Handle processed files with original folder access
+        if ($file instanceof \TYPO3\CMS\Core\Resource\ProcessedFile) {
+            $file = $file->getOriginalFile();
+        }
+
+        foreach ($GLOBALS['BE_USER']->getFileMountRecords() as $fileMount) {
+            /** @var \TYPO3\CMS\Core\Resource\Folder $fileMountObject */
+            $fileMountObject = GeneralUtility::makeInstance(ResourceFactory::class)->getFolderObjectFromCombinedIdentifier($fileMount['base'] . ':' . $fileMount['path']);
+            if ($fileMountObject->getStorage()->getUid() === $file->getStorage()->getUid()) {
+                if ($fileMountObject->hasFile($file->getName())) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     /**
