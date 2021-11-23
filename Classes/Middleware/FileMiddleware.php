@@ -116,6 +116,9 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
         // This check is supposed to never succeed if the processed folder is properly
         // checked at the Web Server level to allow direct access
         if ($file->getStorage()->isWithinProcessingFolder($file->getIdentifier())) {
+            if ($file instanceof \TYPO3\CMS\Core\Resource\ProcessedFile) {
+                return $this->isFileAccessible($file->getOriginalFile(), $user, $maxAge);
+            }
             return true;
         }
 

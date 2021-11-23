@@ -44,6 +44,10 @@ By design, the "_processed_" folder (:file:`/fileadmin/_processed_/`) is not
 protected and its content (thumbnails or resized/cropped images) is always
 freely accessible.
 
+NOTE: Since version > 1.2.0 all ProcessedFiles are resolved to the original FAL 
+resource. As result you can also protect the "_processed_" folder, if the 
+resolution of the original file rights is correct for your purpose.
+
 
 .. _alternatives:
 
