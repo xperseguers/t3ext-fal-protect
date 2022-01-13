@@ -92,4 +92,9 @@ class FileStream extends SelfEmittableLazyOpenStream
 
         fclose($fp);
     }
+
+    public function getFilename(): string
+    {
+        return $this->filename;
+    }
 }
