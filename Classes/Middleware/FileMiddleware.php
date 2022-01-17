@@ -43,7 +43,7 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $target = $request->getRequestTarget();
+        $target = $request->getUri()->getPath();
         $fileadminDir = $GLOBALS['TYPO3_CONF_VARS']['BE']['fileadminDir'];
 
         if (substr($target, 0, strlen($fileadminDir) + 1) === '/' . $fileadminDir) {
