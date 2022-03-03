@@ -27,6 +27,7 @@ use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Http\ImmediateResponseException;
 use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Resource\FileInterface;
+use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
@@ -155,15 +156,30 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
         }
 
         foreach ($GLOBALS['BE_USER']->getFileMountRecords() as $fileMount) {
-            /** @var \TYPO3\CMS\Core\Resource\Folder $fileMountObject */
+            /** @var Folder $fileMountObject */
             $fileMountObject = GeneralUtility::makeInstance(ResourceFactory::class)->getFolderObjectFromCombinedIdentifier($fileMount['base'] . ':' . $fileMount['path']);
             if ($fileMountObject->getStorage()->getUid() === $file->getStorage()->getUid()) {
-                if ($fileMountObject->hasFile($file->getName())) {
+                if ($this->isFileInFolderOrSubFolder($fileMountObject, $file)) {
                     return true;
                 }
             }
         }
 
+        return false;
+    }
+
+    protected function isFileInFolderOrSubFolder(Folder $folder, FileInterface $file)
+    {
+        foreach ($folder->getFiles() as $folderFiles) {
+            if ($folderFiles->getUid() === $file->getUid()) {
+                return true;
+            }
+        }
+        foreach ($folder->getSubfolders() as $subfolder) {
+            if ($this->isFileInFolderOrSubFolder($subfolder, $file)) {
+                return true;
+            }
+        }
         return false;
     }
 
