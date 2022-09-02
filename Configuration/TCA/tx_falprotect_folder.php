@@ -20,9 +20,7 @@ return [
         ],
         'searchFields' => ''
     ],
-    'interface' => [
-        'showRecordFieldList' => 'storage, fe_groups'
-    ],
+    'interface' => [],
     'types' => [
         1 => [
             'showitem' => 'storage, fe_groups'
