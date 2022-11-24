@@ -119,7 +119,9 @@ class EditFolderController
 
         if (preg_match('/^(\d+):(.*)$/', $combinedIdentifier, $matches)) {
             $storage = $this->storageRepository->findByUid((int)$matches[1]);
-            if ($storage !== null && $storage->isDefault()) {
+            if ($storage !== null
+                && $storage->getDriverType() === 'Local'
+                && $storage->getConfiguration()['pathType'] === 'relative') {
                 $this->folderObject = $storage->getFolder($matches[2]);
             }
         }

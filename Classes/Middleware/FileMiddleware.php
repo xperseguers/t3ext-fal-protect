@@ -43,34 +43,23 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $target = $request->getUri()->getPath();
-        $fileadminDir = $GLOBALS['TYPO3_CONF_VARS']['BE']['fileadminDir'];
+        // Respect encoded file names like "sonderzeichenäöü.png" with configurations like [SYS][systemLocale] = "de_DE.UTF8" && [SYS][UTF8filesystem] = "true"
+        $target = urldecode($request->getUri()->getPath());
 
-        if (substr($target, 0, strlen($fileadminDir) + 1) === '/' . $fileadminDir) {
-            /** @var Response $response */
-            $response = GeneralUtility::makeInstance(Response::class);
-
-            $defaultStorage = GeneralUtility::makeInstance(ResourceFactory::class)->getDefaultStorage();
-            if ($defaultStorage === null) {
-                $this->logger->error('Default storage cannot be determined, please check the configuration of your File Storage record at root.');
-                // It is better to block everything than possibly let an administrator think
-                // everything is correctly configured
-                return $response->withStatus(503, 'Service Unavailable');
+        $file = null;
+        // Filter out what is obviously the root page
+        if ($target !== '/') {
+            try {
+                $file = GeneralUtility::makeInstance(ResourceFactory::class)->getFileObjectByStorageAndIdentifier(0, $target);
+            } catch (\InvalidArgumentException $e) {
+                // Nothing to do
             }
-            $fileIdentifier = substr($target, strlen($fileadminDir));
-
-            // Respect encoded file names like "sonderzeichenäöü.png" with configurations like [SYS][systemLocale] = "de_DE.UTF8" && [SYS][UTF8filesystem] = "true"
-            $fileIdentifier = urldecode($fileIdentifier);
-
-            if (!$defaultStorage->hasFile($fileIdentifier)) {
-                $this->pageNotFoundAction($request);
-            }
-
+        }
+        if ($file !== null) {
             $frontendUser = version_compare((new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch(), '10.4', '<')
                 ? $GLOBALS['TSFE']->fe_user
                 : $request->getAttribute('frontend.user');
 
-            $file = $defaultStorage->getFile($fileIdentifier);
             $maxAge = 14400;    // TODO: make this somehow configurable?
             if (!$this->isFileAccessible($file, $frontendUser, $maxAge) && !$this->isFileAccessibleBackendUser($file)) {
                 $this->pageNotFoundAction($request);
