@@ -24,9 +24,13 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use TYPO3\CMS\Backend\FrontendBackendUserAuthentication;
 use TYPO3\CMS\Core\Http\ImmediateResponseException;
 use TYPO3\CMS\Core\Http\Response;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Resource\FileInterface;
+use TYPO3\CMS\Core\Resource\Folder;
+use TYPO3\CMS\Core\Resource\ProcessedFile;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
@@ -66,7 +70,7 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
                 $this->pageNotFoundAction($request);
             }
 
-            $frontendUser = version_compare((new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch(), '10.4', '<')
+            $frontendUser = version_compare((new Typo3Version())->getBranch(), '10.4', '<')
                 ? $GLOBALS['TSFE']->fe_user
                 : $request->getAttribute('frontend.user');
 
@@ -114,7 +118,7 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
         // This check is supposed to never succeed if the processed folder is properly
         // checked at the Web Server level to allow direct access
         if ($file->getStorage()->isWithinProcessingFolder($file->getIdentifier())) {
-            if ($file instanceof \TYPO3\CMS\Core\Resource\ProcessedFile) {
+            if ($file instanceof ProcessedFile) {
                 return $this->isFileAccessible($file->getOriginalFile(), $user, $maxAge);
             }
             return true;
@@ -136,7 +140,7 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
     protected function isFileAccessibleBackendUser(FileInterface $file): bool
     {
         // No BE user auth
-        if (!($GLOBALS['BE_USER'] instanceof \TYPO3\CMS\Backend\FrontendBackendUserAuthentication)) {
+        if (!($GLOBALS['BE_USER'] instanceof FrontendBackendUserAuthentication)) {
             return false;
         }
 
@@ -150,15 +154,15 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
         }
 
         // Handle processed files with original folder access
-        if ($file instanceof \TYPO3\CMS\Core\Resource\ProcessedFile) {
+        if ($file instanceof ProcessedFile) {
             $file = $file->getOriginalFile();
         }
 
         foreach ($GLOBALS['BE_USER']->getFileMountRecords() as $fileMount) {
-            /** @var \TYPO3\CMS\Core\Resource\Folder $fileMountObject */
+            /** @var Folder $fileMountObject */
             $fileMountObject = GeneralUtility::makeInstance(ResourceFactory::class)->getFolderObjectFromCombinedIdentifier($fileMount['base'] . ':' . $fileMount['path']);
             if ($fileMountObject->getStorage()->getUid() === $file->getStorage()->getUid()) {
-                if ($fileMountObject->hasFile($file->getName())) {
+                if ($this->isFileInFolderOrSubFolder($fileMountObject, $file)) {
                     return true;
                 }
             }
@@ -172,6 +176,21 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
         $response = GeneralUtility::makeInstance(ErrorController::class)->pageNotFoundAction($request, $message);
 
         throw new ImmediateResponseException($response, 1604918043);
+    }
+
+    protected function isFileInFolderOrSubFolder(Folder $folder, FileInterface $file)
+    {
+        foreach ($folder->getFiles() as $folderFiles) {
+            if ($folderFiles->getUid() === $file->getUid()) {
+                return true;
+            }
+        }
+        foreach ($folder->getSubfolders() as $subfolder) {
+            if ($this->isFileInFolderOrSubFolder($subfolder, $file)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
