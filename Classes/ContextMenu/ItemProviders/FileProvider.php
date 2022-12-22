@@ -46,7 +46,9 @@ class FileProvider extends \TYPO3\CMS\Filelist\ContextMenu\ItemProviders\FilePro
     protected function canBeEdited(): bool
     {
         if ($this->isFolder()) {
-            return $this->record->getStorage()->isDefault()
+            $storage = $this->record->getStorage();
+            return $storage->getDriverType() === 'Local'
+                && $storage->getConfiguration()['pathType'] === 'relative'
                 && $this->record->checkActionPermission('write')
                 && $this->record->getRole() !== FolderInterface::ROLE_TEMPORARY
                 && $this->record->getRole() !== FolderInterface::ROLE_RECYCLER

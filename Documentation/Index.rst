@@ -17,8 +17,9 @@ FAL Protect
       en
 
    :Description:
-      Protect everything within :file:`/fileadmin/` based on associated folder and file restrictions (visibility, user
-      groups and dates of publication).
+      Protect everything within :file:`/fileadmin/` or other relative storages
+      based on associated folder and file restrictions (visibility, user groups
+      and dates of publication).
 
    :Keywords:
       FAL, files, directories, secure, security, protection

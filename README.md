@@ -1,7 +1,7 @@
 # FAL Protect
 
-This extension protects everything within `/fileadmin/` based on associated folder and file restrictions (visibility,
-user groups and dates of publication):
+This extension protects everything within `/fileadmin/` or other relative storages based on associated folder and file
+restrictions (visibility,  user groups and dates of publication):
 
 ![Protecting a folder and a few individual files][overview]
 
