@@ -51,8 +51,8 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
         $target = urldecode($request->getUri()->getPath());
 
         $file = null;
-        // Filter out what is obviously the root page
-        if ($target !== '/') {
+        // Filter out what is obviously the root page or an non-authorized file name
+        if ($target !== '/' && $this->isValidTarget($target)) {
             try {
                 $file = GeneralUtility::makeInstance(ResourceFactory::class)->getFileObjectByStorageAndIdentifier(0, $target);
             } catch (\InvalidArgumentException $e) {
@@ -92,6 +92,27 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
         }
 
         return $handler->handle($request);
+    }
+
+    /**
+     * @param string $target
+     * @return bool
+     * @see \TYPO3\CMS\Core\Resource\Security\FileNameValidator::isValid()
+     */
+    protected function isValidTarget(string $target): bool
+    {
+        if (isset($GLOBALS['TYPO3_CONF_VARS']['BE']['fileDenyPattern'])) {
+            $fileDenyPattern = $GLOBALS['TYPO3_CONF_VARS']['BE']['fileDenyPattern'];
+        } else {
+            /** Borrowed from @see \TYPO3\CMS\Core\Resource\Security\FileNameValidator::DEFAULT_FILE_DENY_PATTERN */
+            $fileDenyPattern = '\\.(php[3-8]?|phpsh|phtml|pht|phar|shtml|cgi)(\\..*)?$|\\.pl$|^\\.htaccess$';
+        }
+
+        $pattern = '/[[:cntrl:]]/';
+        if ($target !== '' && $fileDenyPattern !== '') {
+            $pattern = '/(?:[[:cntrl:]]|' . $fileDenyPattern . ')/iu';
+        }
+        return preg_match($pattern, $target) === 0;
     }
 
     /**
