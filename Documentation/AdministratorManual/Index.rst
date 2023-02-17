@@ -136,3 +136,13 @@ TYPO3):
      access_log off;
      log_not_found off;
    }
+
+
+
+Recommendations
+-----------------------
+
+PHP Settings
+^^^^^^^^
+
+In order to download large files via a PHP script, it's recommended to activate the PHP extension `opcode` for faster script execution and increase the PHP setting `merory_limit` (to 256MB for example).
