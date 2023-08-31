@@ -19,7 +19,6 @@ namespace Causal\FalProtect\Utility;
 use Causal\FalProtect\Domain\Repository\FolderRepository;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Resource\FileInterface;
-use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Resource\FolderInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -29,7 +28,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class AccessSecurity
 {
-
     /**
      * Returns TRUE if the folder is accessible by the Frontend user.
      *
@@ -97,5 +95,4 @@ class AccessSecurity
 
         return false;
     }
-
 }
