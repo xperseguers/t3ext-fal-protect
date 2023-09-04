@@ -16,8 +16,10 @@ declare(strict_types=1);
 
 namespace Causal\FalProtect\Middleware;
 
+use Causal\FalProtect\Event\SecurityCheckEvent;
 use Causal\FalProtect\Stream\FileStream;
 use Causal\FalProtect\Utility\AccessSecurity;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -65,7 +67,15 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
                 : $request->getAttribute('frontend.user');
 
             $maxAge = 14400;    // TODO: make this somehow configurable?
-            if (!$this->isFileAccessible($file, $frontendUser, $maxAge) && !$this->isFileAccessibleBackendUser($file)) {
+            $isAccessible = $this->isFileAccessible($file, $frontendUser, $maxAge)
+                || $this->isFileAccessibleBackendUser($file);
+
+            $eventDispatcher = GeneralUtility::makeInstance(EventDispatcherInterface::class);
+            $securityCheckEvent = GeneralUtility::makeInstance(SecurityCheckEvent::class, $file, $isAccessible);
+            $eventDispatcher->dispatch($securityCheckEvent);
+            $isAccessible = $securityCheckEvent->isAccessible();
+
+            if (!$isAccessible) {
                 $this->pageNotFoundAction($request);
             }
 
