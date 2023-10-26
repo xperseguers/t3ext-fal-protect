@@ -16,6 +16,7 @@ declare(strict_types=1);
 
 namespace Causal\FalProtect\ContextMenu\ItemProviders;
 
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Resource\FolderInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -64,9 +65,13 @@ class FileProvider extends \TYPO3\CMS\Filelist\ContextMenu\ItemProviders\FilePro
      */
     protected function getAdditionalAttributes(string $itemName): array
     {
+        $callbackModule = version_compare((new Typo3Version())->getBranch(), '12.4', '>=')
+            ? '@causal/fal-protect/context-menu-actions'
+            : 'TYPO3/CMS/FalProtect/ContextMenuActions';
+
         if ($itemName === 'edit' && $this->isFolder()) {
             $attributes = [
-                'data-callback-module' => 'TYPO3/CMS/FalProtect/ContextMenuActions'
+                'data-callback-module' => $callbackModule
             ];
         } else {
             $attributes = parent::getAdditionalAttributes($itemName);

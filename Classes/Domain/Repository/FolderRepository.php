@@ -183,7 +183,7 @@ class FolderRepository implements SingletonInterface
             'pid' => 0,
             'crdate' => $GLOBALS['EXEC_TIME'],
             'tstamp' => $GLOBALS['EXEC_TIME'],
-            'cruser_id' => isset($GLOBALS['BE_USER']->user['uid']) ? (int)$GLOBALS['BE_USER']->user['uid'] : 0,
+            //'cruser_id' => isset($GLOBALS['BE_USER']->user['uid']) ? (int)$GLOBALS['BE_USER']->user['uid'] : 0,
             'storage' => $storage,
             'identifier' => $identifier,
             'identifier_hash' => $hashedIdentifier,

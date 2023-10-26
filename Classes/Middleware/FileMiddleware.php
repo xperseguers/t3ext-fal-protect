@@ -67,7 +67,7 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
                 : $request->getAttribute('frontend.user');
 
             $maxAge = 14400;    // TODO: make this somehow configurable?
-            $isAccessible = $this->isFileAccessible($file, $frontendUser, $maxAge)
+            $isAccessible = $this->isFileAccessible($request, $file, $frontendUser, $maxAge)
                 || $this->isFileAccessibleBackendUser($file);
 
             $eventDispatcher = GeneralUtility::makeInstance(EventDispatcherInterface::class);
@@ -132,12 +132,18 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
     /**
      * Checks whether a given file is accessible by current authenticated user.
      *
+     * @param ServerRequestInterface $request
      * @param FileInterface $file
      * @param FrontendUserAuthentication $user
      * @param int &$maxAge
      * @return bool
      */
-    protected function isFileAccessible(FileInterface $file, FrontendUserAuthentication $user, int &$maxAge): bool
+    protected function isFileAccessible(
+        ServerRequestInterface $request,
+        FileInterface $file,
+        FrontendUserAuthentication $user,
+        int &$maxAge
+    ): bool
     {
         // This check is supposed to never succeed if the processed folder is properly
         // checked at the Web Server level to allow direct access
@@ -150,7 +156,7 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
 
         // Normally done in Middleware typo3/cms-frontend/prepare-tsfe-rendering but we want
         // to be as lightweight as possible:
-        $user->fetchGroupData();
+        $user->fetchGroupData($request);
 
         return AccessSecurity::isFileAccessible($file, $maxAge);
     }

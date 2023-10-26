@@ -14,6 +14,13 @@ services:
         method: 'postProcessIconForResource'
         event: TYPO3\CMS\Core\Imaging\Event\ModifyIconForResourcePropertiesEvent
 
+  Causal\FalProtect\EventListener\BackendControllerEventListener:
+    tags:
+      - name: event.listener
+        identifier: 'causal/fal_protect'
+        method: 'afterBackendPageRender'
+        event: TYPO3\CMS\Backend\Controller\Event\AfterBackendPageRenderEvent
+
   Causal\FalProtect\EventListener\CoreResourceStorageEventListener:
     tags:
       - name: event.listener
