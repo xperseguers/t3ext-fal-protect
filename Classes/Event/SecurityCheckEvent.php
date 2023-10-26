@@ -18,7 +18,7 @@ namespace Causal\FalProtect\Event;
 
 use TYPO3\CMS\Core\Resource\FileInterface;
 
-class SecurityCheckEvent
+final class SecurityCheckEvent
 {
     /**
      * @var FileInterface
