@@ -67,7 +67,7 @@ class FileProvider extends \TYPO3\CMS\Filelist\ContextMenu\ItemProviders\FilePro
     {
         $callbackModule = version_compare((new Typo3Version())->getBranch(), '12.4', '>=')
             ? '@causal/fal-protect/context-menu-actions'
-            : 'TYPO3/CMS/Filelist/ContextMenuActions';
+            : 'TYPO3/CMS/FalProtect/ContextMenuActions';
 
         if ($itemName === 'edit' && $this->isFolder()) {
             $attributes = [
