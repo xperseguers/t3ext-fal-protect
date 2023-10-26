@@ -80,6 +80,10 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
             }
 
             $fileName = $file->getForLocalProcessing(false);
+            if (!is_readable($fileName)) {
+                // This may happen, e.g., if the FAL database is out-of-sync with the file system
+                $this->pageNotFoundAction($request);
+            }
 
             $headers = [];
             $headers['Content-Type'] = $file->getMimeType();
