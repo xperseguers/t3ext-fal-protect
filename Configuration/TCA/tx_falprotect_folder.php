@@ -7,12 +7,9 @@ return [
         'label' => 'identifier',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
-        'cruser_id' => 'cruser_id',
         'hideTable' => true,
         'rootLevel' => 1,
-        'iconfile' => version_compare((new \TYPO3\CMS\Core\Information\Typo3Version())->getVersion(), '10.4.10', '<')
-            ? 'EXT:core/Resources/Public/Icons/T3Icons/apps/apps-filetree-folder-default.svg'
-            : 'EXT:core/Resources/Public/Icons/T3Icons/svgs/apps/apps-filetree-folder-default.svg',
+        'iconfile' => 'EXT:core/Resources/Public/Icons/T3Icons/svgs/apps/apps-filetree-folder-default.svg',
         'default_sortby' => 'crdate DESC',
         'security' => [
             'ignoreWebMountRestriction' => true,

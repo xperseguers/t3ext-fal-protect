@@ -62,9 +62,7 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
             }
         }
         if ($file !== null) {
-            $frontendUser = version_compare((new Typo3Version())->getBranch(), '10.4', '<')
-                ? $GLOBALS['TSFE']->fe_user
-                : $request->getAttribute('frontend.user');
+            $frontendUser = $request->getAttribute('frontend.user');
 
             $maxAge = 14400;    // TODO: make this somehow configurable?
             $isAccessible = $this->isFileAccessible($request, $file, $frontendUser, $maxAge)
