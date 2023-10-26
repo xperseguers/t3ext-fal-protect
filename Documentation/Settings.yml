@@ -6,8 +6,8 @@
 conf.py:
   copyright: 2020-2023
   project: FAL Protect
-  version: 1.4
-  release: 1.4.1
+  version: 1.5
+  release: 1.5.0
   latex_documents:
   - - Index
     - fal_protect.tex
