@@ -23,6 +23,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * This class adds FalProtect related JavaScript to the backend
+ *
+ * @deprecated since TYPO3 v12
  */
 class BackendControllerHook
 {
