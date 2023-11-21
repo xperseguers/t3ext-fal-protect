@@ -147,7 +147,7 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
         // checked at the Web Server level to allow direct access
         if ($file->getStorage()->isWithinProcessingFolder($file->getIdentifier())) {
             if ($file instanceof ProcessedFile) {
-                return $this->isFileAccessible($file->getOriginalFile(), $user, $maxAge);
+                return $this->isFileAccessible($request, $file->getOriginalFile(), $user, $maxAge);
             }
             return true;
         }
