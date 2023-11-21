@@ -61,4 +61,4 @@ We prefer, at least for the time being (see ideas for the future below) to issue
 
 ## Complete documentation
 
-A more complete documentation can be found on https://docs.typo3.org/p/causal/fal-protect/1.4/en-us/.
+A more complete documentation can be found on https://docs.typo3.org/p/causal/fal-protect/main/en-us/.
