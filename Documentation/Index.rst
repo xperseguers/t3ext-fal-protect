@@ -5,46 +5,48 @@
 FAL Protect
 ===========
 
-.. only:: html
+:Extension key:
+   fal_protect
 
-   :Classification:
-      fal_protect
+:Package name:
+   causal/fal-protect
 
-   :Version:
-      |release|
+:Version:
+   |release|
 
-   :Language:
-      en
+:Language:
+   en
 
-   :Description:
-      Protect everything within :file:`/fileadmin/` or other relative storages
-      based on associated folder and file restrictions (visibility, user groups
-      and dates of publication).
+:Description:
+   Protect everything within :file:`/fileadmin/` or other relative storages
+   based on associated folder and file restrictions (visibility, user groups
+   and dates of publication).
 
-   :Keywords:
-      FAL, files, directories, secure, security, protection
+:Keywords:
+   FAL, files, directories, secure, security, protection
 
-   :Copyright:
-      2020-2023
+:Copyright:
+   2020-2023
 
-   :Author:
-      Xavier Perseguers
+:Author:
+   Xavier Perseguers
 
-   :Email:
-      xavier@causal.ch
+:License:
+   This document is published under the
+   `Creative Commons BY 4.0 <https://creativecommons.org/licenses/by/4.0/>`__
+   license.
 
-   :License:
-      This document is published under the Open Publication License
-      available from https://www.opencontent.org/openpub/
+:Rendered:
+   |today|
 
-   :Rendered:
-      |today|
+----
 
-   The content of this document is related to TYPO3,
-   a GNU/GPL CMS/Framework available from `www.typo3.org <https://typo3.org/>`__.
+Protect everything within /fileadmin/ based on associated folder and file
+restrictions (visibility, user groups and dates of publication).
 
+----
 
-   **Table of Contents**
+**Table of Contents:**
 
 .. toctree::
    :maxdepth: 3
@@ -55,3 +57,10 @@ FAL Protect
    AdministratorManual/Index
    KnownProblems/Index
    Links
+
+.. Meta Menu
+
+..  toctree::
+    :hidden:
+
+    Sitemap
