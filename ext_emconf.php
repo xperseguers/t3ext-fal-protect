@@ -2,8 +2,6 @@
 
 /***************************************************************
  * Extension Manager/Repository config file for ext "fal_protect".
- *
- * Auto generated 30-10-2020 10:11
  ***************************************************************/
 
 $EM_CONF[$_EXTKEY] = [
@@ -12,16 +10,13 @@ $EM_CONF[$_EXTKEY] = [
     'category' => 'services',
     'version' => '1.5.1',
     'state' => 'stable',
-    'uploadfolder' => 0,
-    'createDirs' => '',
-    'clearcacheonload' => 0,
     'author' => 'Xavier Perseguers',
     'author_email' => 'xavier@causal.ch',
     'author_company' => 'Causal Sàrl',
     'constraints' => [
         'depends' => [
             'php' => '7.2.0-8.3.99',
-            'typo3' => '10.4.0-12.4.99'
+            'typo3' => '10.4.0-13.0.99'
         ],
         'conflicts' => [],
         'suggests' => [],

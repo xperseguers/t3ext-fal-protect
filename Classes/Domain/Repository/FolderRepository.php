@@ -71,7 +71,7 @@ class FolderRepository implements SingletonInterface
                     'identifier_hash' => $hashedIdentifier,
                 ]
             )
-            ->fetch();
+            ->fetchAssociative();
 
         return !empty($record) ? $record : null;
     }
