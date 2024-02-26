@@ -4,10 +4,10 @@
 
 ---
 conf.py:
-  copyright: 2020-2023
+  copyright: 2020-2024
   project: FAL Protect
   version: 1.5
-  release: 1.5.1
+  release: 1.5.2
   latex_documents:
   - - Index
     - fal_protect.tex
