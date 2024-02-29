@@ -187,8 +187,13 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
         }
 
         foreach ($GLOBALS['BE_USER']->getFileMountRecords() as $fileMount) {
+            if (version_compare((new Typo3Version())->getBranch(), '12.1', '>=')) {
+                $identifier = $fileMount['identifier'];
+            } else {
+                $identifier = $fileMount['base'] . ':' . $fileMount['path'];
+            }
             /** @var Folder $fileMountObject */
-            $fileMountObject = GeneralUtility::makeInstance(ResourceFactory::class)->getFolderObjectFromCombinedIdentifier($fileMount['base'] . ':' . $fileMount['path']);
+            $fileMountObject = GeneralUtility::makeInstance(ResourceFactory::class)->getFolderObjectFromCombinedIdentifier($identifier);
             if ($fileMountObject->getStorage()->getUid() === $file->getStorage()->getUid()) {
                 if ($this->isFileInFolderOrSubFolder($fileMountObject, $file)) {
                     return true;
