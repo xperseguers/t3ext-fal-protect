@@ -3,6 +3,13 @@
 #
 CREATE TABLE tx_falprotect_folder
 (
+    # required in TYPO3 v8
+    uid int(10) unsigned NOT NULL auto_increment,
+    pid int(10) unsigned NOT NULL default '0',
+    tstamp int(10) unsigned NOT NULL default '0',
+    crdate int(10) unsigned NOT NULL default '0',
+    cruser_id int(10) unsigned NOT NULL default '0',
+
     # management information
     storage int(11) DEFAULT '0' NOT NULL,
 
@@ -12,7 +19,9 @@ CREATE TABLE tx_falprotect_folder
     # FE permissions
     fe_groups tinytext,
 
-    KEY folder (storage,identifier_hash)
+    PRIMARY KEY (uid),
+    KEY folder (storage,identifier_hash),
+    KEY parent (pid)
 );
 
 #
