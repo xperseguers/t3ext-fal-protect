@@ -39,7 +39,7 @@ Edit file :file:`.htaccess` (or your virtual host) to read:
    .. code-block:: apache
 
       RewriteCond %{REQUEST_URI} !/fileadmin/_processed_/.*$
-      RewriteRule ^fileadmin/.*$ index.php?eID=tx_fal_protect [QSA,L]
+      RewriteRule ^fileadmin/.*$ index.php?eID=tx_falprotect [QSA,L]
 
 
 .. _admin-manual-nginx:
