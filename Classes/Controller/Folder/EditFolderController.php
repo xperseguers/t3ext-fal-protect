@@ -82,13 +82,23 @@ class EditFolderController
      * Processes the request, currently everything is handled and put together via "process()"
      *
      * @param ServerRequestInterface $request the current request
+     * @param ResponseInterface $response the current response (TYPO3 v8)
      * @return ResponseInterface the response with the content
      */
-    public function mainAction(ServerRequestInterface $request): ResponseInterface
+    public function mainAction(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         $this->init($request);
 
+        $typo3Branch = class_exists(\TYPO3\CMS\Core\Information\Typo3Version::class)
+            ? (new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch()
+            : TYPO3_branch;
+
         if ($this->folderObject === null) {
+            if (version_compare($typo3Branch, '9.5', '<')) {
+                return $response
+                    ->withHeader('Location', $this->returnUrl)
+                    ->withStatus(303);
+            }
             return new RedirectResponse($this->returnUrl);
         }
 
@@ -103,6 +113,11 @@ class EditFolderController
         ];
         $url = (string)$this->uriBuilder->buildUriFromRoute('record_edit', $urlParameters);
 
+        if (version_compare($typo3Branch, '9.5', '<')) {
+            return $response
+                ->withHeader('Location', $url)
+                ->withStatus(303);
+        }
         return new RedirectResponse($url);
     }
 
