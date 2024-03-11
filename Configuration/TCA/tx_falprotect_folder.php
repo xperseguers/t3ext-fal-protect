@@ -5,9 +5,13 @@ $typo3Version = class_exists(\TYPO3\CMS\Core\Information\Typo3Version::class)
     ? (new \TYPO3\CMS\Core\Information\Typo3Version())->getVersion()
     : TYPO3_version;
 
+$coreLabels = version_compare($typo3Version, '9.5', '>=')
+    ? 'LLL:EXT:core/Resources/Private/Language/'
+    : 'LLL:EXT:lang/Resources/Private/Language/';
+
 return [
     'ctrl' => [
-        'title' => 'LLL:EXT:core/Resources/Private/Language/locallang_tca.xlf:sys_file_collection.folder',
+        'title' => $coreLabels . 'locallang_tca.xlf:sys_file_collection.folder',
         'label' => 'identifier',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
@@ -38,7 +42,7 @@ return [
             ],
         ],
         'storage' => [
-            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_tca.xlf:sys_file.storage',
+            'label' => $coreLabels . 'locallang_tca.xlf:sys_file.storage',
             'config' => [
                 'readOnly' => true,
                 'type' => 'select',
@@ -54,7 +58,7 @@ return [
             ]
         ],
         'identifier' => [
-            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_tca.xlf:sys_file.identifier',
+            'label' => $coreLabels . 'locallang_tca.xlf:sys_file.identifier',
             'config' => [
                 'readOnly' => true,
                 'type' => 'input',
@@ -63,7 +67,7 @@ return [
         ],
         'fe_groups' => [
             'exclude' => true,
-            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.fe_group',
+            'label' => $coreLabels . 'locallang_general.xlf:LGL.fe_group',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectMultipleSideBySide',
@@ -71,15 +75,15 @@ return [
                 'maxitems' => 20,
                 'items' => [
                     [
-                        'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.hide_at_login',
+                        $coreLabels . 'locallang_general.xlf:LGL.hide_at_login',
                         -1
                     ],
                     [
-                        'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.any_login',
+                        $coreLabels . 'locallang_general.xlf:LGL.any_login',
                         -2
                     ],
                     [
-                        'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.usergroups',
+                        $coreLabels . 'locallang_general.xlf:LGL.usergroups',
                         '--div--'
                     ]
                 ],
