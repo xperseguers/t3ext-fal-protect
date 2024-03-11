@@ -8,12 +8,17 @@ defined('TYPO3_MODE') || die();
     if (version_compare($typo3Branch, '10.2', '<')) {
         /** @var \TYPO3\CMS\Extbase\SignalSlot\Dispatcher $signalSlotDispatcher */
         $signalSlotDispatcher = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\SignalSlot\Dispatcher::class);
-        $signalSlotDispatcher->connect(
-            'TYPO3\\CMS\\Core\\Imaging\\IconFactory',
-            'buildIconForResourceSignal',
-            \Causal\FalProtect\Slots\IconFactory::class,
-            'postProcessIconForResource'
-        );
+        if (version_compare($typo3Branch, '9.5', '<')) {
+            // TYPO3 v8
+            // TODO
+        } else {
+            $signalSlotDispatcher->connect(
+                'TYPO3\\CMS\\Core\\Imaging\\IconFactory',
+                'buildIconForResourceSignal',
+                \Causal\FalProtect\Slots\IconFactory::class,
+                'postProcessIconForResource'
+            );
+        }
 
         $listenSignals = [
             \TYPO3\CMS\Core\Resource\ResourceStorageInterface::SIGNAL_PreFolderCopy,
@@ -46,8 +51,6 @@ defined('TYPO3_MODE') || die();
         ],
     ];
 
-    // Override the context menu as defined in EXT:filelist
-    $GLOBALS['TYPO3_CONF_VARS']['BE']['ContextMenu']['ItemProviders'][1486418731] = \Causal\FalProtect\ContextMenu\ItemProviders\FileProvider::class;
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/backend.php']['constructPostProcess'][] = \Causal\FalProtect\Hooks\BackendControllerHook::class . '->addJavaScript';
 
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addUserTSConfig('
