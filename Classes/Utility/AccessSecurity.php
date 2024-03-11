@@ -38,15 +38,7 @@ class AccessSecurity
      */
     public static function isFolderAccessible(FolderInterface $folder): bool
     {
-        $typo3Branch = class_exists(\TYPO3\CMS\Core\Information\Typo3Version::class)
-            ? (new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch()
-            : TYPO3_branch;
-        if (version_compare($typo3Branch, '9.5', '>=')) {
-            $frontendUserAspect = GeneralUtility::makeInstance(Context::class)->getAspect('frontend.user');
-        } else {
-            $frontendUserAspect = $GLOBALS['TSFE']->fe_user;
-        }
-        $userGroups = $frontendUserAspect->getGroupIds();
+        $userGroups = static::getGroupIds();
 
         // Check access restrictions on folders up to the root
         // InsufficientFolderAccessPermissionsException does not seem to be throwable in that context
@@ -77,8 +69,7 @@ class AccessSecurity
             return false;
         }
 
-        $frontendUserAspect = GeneralUtility::makeInstance(Context::class)->getAspect('frontend.user');
-        $userGroups = $frontendUserAspect->getGroupIds();
+        $userGroups = static::getGroupIds();
 
         $isVisible = $file->hasProperty('visible') ? (bool)$file->getProperty('visible') : true;
         if ($isVisible) {
@@ -105,4 +96,32 @@ class AccessSecurity
         return false;
     }
 
+    protected static function getGroupIds(): array
+    {
+        $typo3Branch = class_exists(\TYPO3\CMS\Core\Information\Typo3Version::class)
+            ? (new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch()
+            : TYPO3_branch;
+        if (version_compare($typo3Branch, '9.5', '>=')) {
+            $frontendUserAspect = GeneralUtility::makeInstance(Context::class)->getAspect('frontend.user');
+            return $frontendUserAspect->getGroupIds();
+        }
+
+        $frontendUser = $GLOBALS['TSFE']->fe_user;
+
+        // Alternative groups are set
+        $isLoggedIn = ($frontendUser->user[$frontendUser->userid_column ?? 'uid'] ?? 0) > 0 && !empty($frontendUser->groupData['uid'] ?? null);
+        if (is_array($frontendUser->groups)) {
+            $groups = $frontendUser->groups;
+        } elseif ($isLoggedIn) {
+            // If a user is logged in, always add "-2"
+            $groups = [0, -2];
+            if (!empty($frontendUser->groupData['uid'])) {
+                $groups = array_merge($groups, array_map('intval', $frontendUser->groupData['uid']));
+            }
+        } else {
+            $groups = [0, -1];
+        }
+
+        return $groups;
+    }
 }
