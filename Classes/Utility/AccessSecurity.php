@@ -38,7 +38,14 @@ class AccessSecurity
      */
     public static function isFolderAccessible(FolderInterface $folder): bool
     {
-        $frontendUserAspect = GeneralUtility::makeInstance(Context::class)->getAspect('frontend.user');
+        $typo3Branch = class_exists(\TYPO3\CMS\Core\Information\Typo3Version::class)
+            ? (new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch()
+            : TYPO3_branch;
+        if (version_compare($typo3Branch, '9.5', '>=')) {
+            $frontendUserAspect = GeneralUtility::makeInstance(Context::class)->getAspect('frontend.user');
+        } else {
+            $frontendUserAspect = $GLOBALS['TSFE']->fe_user;
+        }
         $userGroups = $frontendUserAspect->getGroupIds();
 
         // Check access restrictions on folders up to the root

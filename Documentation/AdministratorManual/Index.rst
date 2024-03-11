@@ -31,6 +31,16 @@ Edit file :file:`.htaccess` (or your virtual host) to read:
 
 **BEWARE:** Be sure to add this rule before any other related rule.
 
+.. note::
+
+   If you are using TYPO3 8.7, where PSR-15 Middleware did not exist,
+   you can also use the following configuration instead:
+
+   .. code-block:: apache
+
+      RewriteCond %{REQUEST_URI} !/fileadmin/_processed_/.*$
+      RewriteRule ^fileadmin/.*$ index.php?eID=tx_fal_protect [QSA,L]
+
 
 .. _admin-manual-nginx:
 
@@ -92,8 +102,8 @@ freely accessible. The rules above exclude this directory from useless
 processing by TYPO3 but even if you ask to process absolutely everything by
 this extension, files within the "_processed_" folder are always public.
 
-NOTE: Since version > 1.2.0 all ProcessedFiles are resolved to the original FAL 
-resource. As result you can also protect the "_processed_" folder, if the 
+NOTE: Since version > 1.2.0 all ProcessedFiles are resolved to the original FAL
+resource. As result you can also protect the "_processed_" folder, if the
 resolution of the original file rights is correct for your purpose.
 
 

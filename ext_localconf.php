@@ -10,7 +10,7 @@ defined('TYPO3_MODE') || die();
         $signalSlotDispatcher = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\SignalSlot\Dispatcher::class);
         if (version_compare($typo3Branch, '9.5', '<')) {
             // TYPO3 v8
-            // TODO
+            $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['tx_fal_protect'] = 'EXT:fal_protect/Classes/Eid/FileAccess.php';
         } else {
             $signalSlotDispatcher->connect(
                 'TYPO3\\CMS\\Core\\Imaging\\IconFactory',
