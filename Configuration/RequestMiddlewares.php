@@ -1,4 +1,7 @@
 <?php
+$typo3Branch = class_exists(\TYPO3\CMS\Core\Information\Typo3Version::class)
+    ? (new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch()
+    : TYPO3_branch;
 return [
     'frontend' => [
         'causal/fal-protect/fetch-file' => [
@@ -8,7 +11,7 @@ return [
                 'typo3/cms-frontend/site',
             ],
             'before' =>
-                version_compare((new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch(), '10.4', '<')
+                version_compare($typo3Branch, '10.4', '<')
                     ? [
                     'typo3/cms-frontend/preview-simulator',
                 ]

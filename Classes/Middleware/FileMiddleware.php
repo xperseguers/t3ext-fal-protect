@@ -60,7 +60,10 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
             }
         }
         if ($file !== null) {
-            $frontendUser = version_compare((new Typo3Version())->getBranch(), '10.4', '<')
+            $typo3Branch = class_exists(Typo3Version::class)
+                ? (new Typo3Version())->getBranch()
+                : TYPO3_branch;
+            $frontendUser = version_compare($typo3Branch, '10.4', '<')
                 ? $GLOBALS['TSFE']->fe_user
                 : $request->getAttribute('frontend.user');
 

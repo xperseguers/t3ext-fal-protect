@@ -1,6 +1,10 @@
 <?php
 defined('TYPO3_MODE') || die();
 
+$typo3Version = class_exists(\TYPO3\CMS\Core\Information\Typo3Version::class)
+    ? (new \TYPO3\CMS\Core\Information\Typo3Version())->getVersion()
+    : TYPO3_version;
+
 return [
     'ctrl' => [
         'title' => 'LLL:EXT:core/Resources/Private/Language/locallang_tca.xlf:sys_file_collection.folder',
@@ -10,7 +14,7 @@ return [
         'cruser_id' => 'cruser_id',
         'hideTable' => true,
         'rootLevel' => 1,
-        'iconfile' => version_compare((new \TYPO3\CMS\Core\Information\Typo3Version())->getVersion(), '10.4.10', '<')
+        'iconfile' => version_compare($typo3Version, '10.4.10', '<')
             ? 'EXT:core/Resources/Public/Icons/T3Icons/apps/apps-filetree-folder-default.svg'
             : 'EXT:core/Resources/Public/Icons/T3Icons/svgs/apps/apps-filetree-folder-default.svg',
         'default_sortby' => 'crdate DESC',
