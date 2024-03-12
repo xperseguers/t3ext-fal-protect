@@ -8,7 +8,6 @@ CREATE TABLE tx_falprotect_folder
     pid int(10) unsigned NOT NULL default '0',
     tstamp int(10) unsigned NOT NULL default '0',
     crdate int(10) unsigned NOT NULL default '0',
-    cruser_id int(10) unsigned NOT NULL default '0',
 
     # management information
     storage int(11) DEFAULT '0' NOT NULL,
