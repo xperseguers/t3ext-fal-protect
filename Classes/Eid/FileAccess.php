@@ -18,6 +18,7 @@ namespace Causal\FalProtect\Eid;
 
 use Causal\FalProtect\Utility\AccessSecurity;
 use TYPO3\CMS\Backend\FrontendBackendUserAuthentication;
+use TYPO3\CMS\Core\Core\Bootstrap;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Resource\ProcessedFile;
@@ -25,7 +26,6 @@ use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
-use TYPO3\CMS\Frontend\Utility\EidUtility;
 
 /**
  * This is the equivalent as
@@ -41,15 +41,19 @@ class FileAccess
         $file = null;
         // Filter out what is obviously the root page or an non-authorized file name
         if ($target !== '/' && $this->isValidTarget($target)) {
+            // We must initialize the TSFE in order to correctly guess the
+            // sys_file_storage when fetching the FAL file object below
+            $this->initializeTSFE();
+
             try {
+                // Strip out the leading slash
+                $target = ltrim($target, '/');
                 $file = GeneralUtility::makeInstance(ResourceFactory::class)->getFileObjectByStorageAndIdentifier(0, $target);
             } catch (\InvalidArgumentException $e) {
                 // Nothing to do
             }
         }
         if ($file !== null) {
-            $this->initializeTSFE();
-            $GLOBALS['TSFE']->initFEuser();
             $frontendUser = $GLOBALS['TSFE']->fe_user;
 
             $maxAge = 14400;    // TODO: make this somehow configurable?
@@ -214,6 +218,10 @@ class FileAccess
      */
     protected function initializeTSFE(): void
     {
+        $bootstrap = Bootstrap::getInstance();
+        $bootstrap->loadBaseTca();
+
+        /** @var TypoScriptFrontendController $tsfe */
         $tsfe = GeneralUtility::makeInstance(
             TypoScriptFrontendController::class,
             $GLOBALS['TYPO3_CONF_VARS'],
@@ -225,6 +233,9 @@ class FileAccess
             GeneralUtility::_GP('MP'),
             GeneralUtility::_GP('RDCT')
         );
+
+        $tsfe->initFEuser();
+        $tsfe->determineId();
 
         $GLOBALS['TSFE'] = $tsfe;
     }
