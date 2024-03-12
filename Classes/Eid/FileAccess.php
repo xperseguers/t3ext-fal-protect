@@ -37,6 +37,8 @@ class FileAccess
     public function process(): void
     {
         $target = urldecode((string)GeneralUtility::getIndpEnv('REQUEST_URI'));
+        // Strip any query parameters
+        $target = strtok($target, '?');
 
         $file = null;
         // Filter out what is obviously the root page or an non-authorized file name
