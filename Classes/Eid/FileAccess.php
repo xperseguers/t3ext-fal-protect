@@ -222,6 +222,7 @@ class FileAccess
     {
         $bootstrap = Bootstrap::getInstance();
         $bootstrap->loadBaseTca();
+        $bootstrap->initializeBackendUser(FrontendBackendUserAuthentication::class);
 
         /** @var TypoScriptFrontendController $tsfe */
         $tsfe = GeneralUtility::makeInstance(
