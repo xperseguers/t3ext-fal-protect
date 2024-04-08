@@ -78,7 +78,7 @@ if (!\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('filemetadata'
             fe_groups
         ',
         '',
-        'after:alternative'
+        'after:title'
     );
 }
 
