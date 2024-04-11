@@ -46,18 +46,15 @@ location ~ /fileadmin/(?!(_processed_/)) {
 }
 ```
 
-## Why 404 instead of 403?
+## Why 404 instead of 403 by default?
 
 In case you try to access a restricted file and do not have the right to do so, the logical HTTP status code to use
 _should be_ either a `403 Forbidden` (or possibly a `401 Unauthorized`) but by doing so, you make it clear for a
 malicious user that the resource exists but is not accessible.
 
-We prefer, at least for the time being (see ideas for the future below) to issue a `404 Not Found` instead.
-
-## Ideas for the future
-
-- Instead of denying access altogether if the user is not authenticated at all, it could be useful to redirect to a
-  login page instead.
+We prefer, by default, to issue a `404 Not Found` but you can freely choose to issue a `403 Forbidden` in the extension
+settings. This is particularly useful if you plan to redirect to a login page when a user tries to access a restricted
+resource.
 
 ## Complete documentation
 
