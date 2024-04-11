@@ -92,8 +92,8 @@ freely accessible. The rules above exclude this directory from useless
 processing by TYPO3 but even if you ask to process absolutely everything by
 this extension, files within the "_processed_" folder are always public.
 
-NOTE: Since version > 1.2.0 all ProcessedFiles are resolved to the original FAL 
-resource. As result you can also protect the "_processed_" folder, if the 
+NOTE: Since version > 1.2.0 all ProcessedFiles are resolved to the original FAL
+resource. As result you can also protect the "_processed_" folder, if the
 resolution of the original file rights is correct for your purpose.
 
 
@@ -136,3 +136,14 @@ TYPO3):
      access_log off;
      log_not_found off;
    }
+
+
+.. _admin-404-or-403:
+
+404 or 403?
+-----------
+
+By default, the extension will return a ``404 Not Found`` error if a file is not
+found. This is a security measure to prevent attackers from guessing file names.
+If you prefer to return a ``403 Forbidden`` error instead, you can do so by
+changing the default setting in the extension configuration.

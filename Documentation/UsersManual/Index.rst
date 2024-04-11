@@ -52,17 +52,21 @@ you can choose to restrict access to any user group:
    files, whenever a user is trying to access a given file, all parent folders
    are checked to ensure the file is accessible with any possible restriction.
    Finally, restrictions on the file itself are taken into account and if
-   access is denied, a 404 HTTP error is returned.
+   access is denied, a 404 HTTP error is returned (or a 403 if configured in
+   the extension settings).
 
 
 .. _why-404-instead-of-403:
 
-Why 404 instead of 403?
------------------------
+Why 404 instead of 403 by default?
+----------------------------------
 
 In case you try to access a restricted file and do not have the right to do so,
 the logical HTTP status code to use *should be* either a ``403 Forbidden`` (or
 possibly a ``401 Unauthorized``) but by doing so, you make it clear for a
 malicious user that the resource exists but is not accessible.
 
-We prefer, at least for the time being to issue a ``404 Not Found`` instead.
+We prefer, by default, to issue a ``404 Not Found`` but you can freely choose
+to issue a ``403 Forbidden`` in the extension settings. This is particularly
+useful if you plan to redirect to a login page when a user tries to access a
+restricted resource.

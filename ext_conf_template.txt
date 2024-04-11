@@ -1,0 +1,2 @@
+# cat=basic/enable/10; type=boolean; label=LLL:EXT:fal_protect/Resources/Private/Language/locallang_db.xlf:settings.return_403
+return_403 = 0

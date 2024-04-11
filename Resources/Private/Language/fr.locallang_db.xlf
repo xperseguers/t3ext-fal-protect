@@ -3,6 +3,9 @@
     <file source-language="en" datatype="plaintext" original="messages" date="2020-11-09T11:31:21Z" product-name="fal_protect" target-language="fr">
         <header/>
         <body>
+            <trans-unit id="settings.return_403">
+                <target>Renvoie "403 Forbidden": Par défaut : Off = "404 Not Found".</target>
+            </trans-unit>
             <trans-unit id="clickmenu.folderPermissions">
                 <target>Autorisations du dossier</target>
             </trans-unit>

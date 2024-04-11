@@ -27,6 +27,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Backend\FrontendBackendUserAuthentication;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Http\ImmediateResponseException;
 use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Information\Typo3Version;
@@ -44,7 +45,6 @@ use TYPO3\CMS\Frontend\Controller\ErrorController;
  */
 class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
 {
-
     use LoggerAwareTrait;
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
@@ -74,6 +74,10 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
             $isAccessible = $securityCheckEvent->isAccessible();
 
             if (!$isAccessible) {
+                $settings = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('fal_protect') ?? [];
+                if ((bool)($settings['return_403'] ?? false)) {
+                    $this->accessDeniedAction($request);
+                }
                 $this->pageNotFoundAction($request);
             }
 
@@ -211,6 +215,13 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
         throw new ImmediateResponseException($response, 1604918043);
     }
 
+    protected function accessDeniedAction(ServerRequestInterface $request, string $message = 'Forbidden'): void
+    {
+        $response = GeneralUtility::makeInstance(ErrorController::class)->accessDeniedAction($request, $message);
+
+        throw new ImmediateResponseException($response, 1604918043);
+    }
+
     protected function isFileInFolderOrSubFolder(Folder $folder, FileInterface $file)
     {
         foreach ($folder->getFiles() as $folderFiles) {
@@ -225,5 +236,4 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
         }
         return false;
     }
-
 }
