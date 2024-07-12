@@ -65,7 +65,7 @@ class FileProvider extends \TYPO3\CMS\Filelist\ContextMenu\ItemProviders\FilePro
      */
     protected function getAdditionalAttributes(string $itemName): array
     {
-        $callbackModule = version_compare((new Typo3Version())->getBranch(), '12.4', '>=')
+        $callbackModule = (new Typo3Version())->getMajorVersion() >= 12
             ? '@causal/fal-protect/context-menu-actions'
             : 'TYPO3/CMS/FalProtect/ContextMenuActions';
 

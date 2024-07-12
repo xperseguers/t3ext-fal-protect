@@ -15,8 +15,8 @@ defined('TYPO3_MODE') || defined('TYPO3') || die();
 
     // Override the context menu as defined in EXT:filelist
     $GLOBALS['TYPO3_CONF_VARS']['BE']['ContextMenu']['ItemProviders'][1486418731] = \Causal\FalProtect\ContextMenu\ItemProviders\FileProvider::class;
-    $typo3Version = (new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch();
-    if (version_compare($typo3Version, '12.4', '<')) {
+    $typo3Version = (new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion();
+    if ($typo3Version < 12) {
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/backend.php']['constructPostProcess'][] = \Causal\FalProtect\Hooks\BackendControllerHook::class . '->addJavaScript';
     }
 

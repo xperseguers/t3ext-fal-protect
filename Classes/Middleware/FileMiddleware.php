@@ -191,7 +191,7 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
         }
 
         foreach ($GLOBALS['BE_USER']->getFileMountRecords() as $fileMount) {
-            if (version_compare((new Typo3Version())->getBranch(), '12.1', '>=')) {
+            if ((new Typo3Version())->getMajorVersion() >= 12) {
                 $identifier = $fileMount['identifier'];
             } else {
                 $identifier = $fileMount['base'] . ':' . $fileMount['path'];
