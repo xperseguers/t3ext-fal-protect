@@ -1,5 +1,5 @@
 <?php
-defined('TYPO3_MODE') || defined('TYPO3') || die();
+defined('TYPO3') || die();
 
 (static function (string $_EXTKEY) {
     if ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() < 11) {
