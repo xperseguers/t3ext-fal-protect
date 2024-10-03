@@ -15,13 +15,18 @@ declare(strict_types = 1);
  */
 
 use TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider;
+use TYPO3\CMS\Core\Imaging\IconProvider\SvgSpriteIconProvider;
 use TYPO3\CMS\Core\Information\Typo3Version;
 
 return [
-    'actions-protect-folder' => [
-        'provider' => SvgIconProvider::class,
-        'source' => (new Typo3Version())->getMajorVersion() >= 12
-            ? 'EXT:fal_protect/Resources/Public/Icons/protect-folder-v12.svg'
-            : 'EXT:fal_protect/Resources/Public/Icons/protect-folder.svg',
-    ],
+    'actions-protect-folder' => (new Typo3Version())->getMajorVersion() >= 12
+        ? [
+            'provider' => SvgSpriteIconProvider::class,
+            'source' => 'EXT:fal_protect/Resources/Public/Icons/protect-folder-v12.svg',
+            'sprite' => 'EXT:fal_protect/Resources/Public/Icons/sprites.svg#protect-folder'
+        ]
+        : [
+            'provider' => SvgIconProvider::class,
+            'source' => 'EXT:fal_protect/Resources/Public/Icons/protect-folder.svg'
+        ],
 ];
