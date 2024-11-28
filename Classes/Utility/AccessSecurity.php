@@ -18,6 +18,7 @@ namespace Causal\FalProtect\Utility;
 
 use Causal\FalProtect\Domain\Repository\FolderRepository;
 use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Resource\Exception\FolderDoesNotExistException;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\FolderInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -64,7 +65,12 @@ class AccessSecurity
      */
     public static function isFileAccessible(FileInterface $file, int &$maxAge = 0): bool
     {
-        if (!static::isFolderAccessible($file->getParentFolder())) {
+        try {
+            $parentFolder = $file->getParentFolder();
+        } catch (FolderDoesNotExistException $e) {
+            return false;
+        }
+        if (!static::isFolderAccessible($parentFolder)) {
             return false;
         }
 
