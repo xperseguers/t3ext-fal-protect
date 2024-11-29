@@ -156,7 +156,7 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
             return true;
         }
 
-        // Normally done in Middleware typo3/cms-frontend/prepare-tsfe-rendering but we want
+        // Normally done in Middleware typo3/cms-frontend/prepare-tsfe-rendering, but we want
         // to be as lightweight as possible:
         $user->fetchGroupData($request);
 
