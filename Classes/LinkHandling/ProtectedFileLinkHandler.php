@@ -35,7 +35,7 @@ class ProtectedFileLinkHandler extends FileLinkHandler
         // Link to file even if access is missing?
         $request = $GLOBALS['TYPO3_REQUEST'] ?? null;
         if ($request !== null) {
-            $frontendTypoScriptConfigArray = $request->getAttribute('frontend.typoscript')?->getConfigArray();
+            $frontendTypoScriptConfigArray = $request->getAttribute('frontend.typoscript')->getConfigArray();
             if ((bool)($frontendTypoScriptConfigArray['typolinkLinkAccessRestrictedPages'] ?? false)) {
                 return $file;
             }
