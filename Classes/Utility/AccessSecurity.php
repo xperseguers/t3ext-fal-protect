@@ -19,6 +19,7 @@ namespace Causal\FalProtect\Utility;
 use Causal\FalProtect\Domain\Repository\FolderRepository;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Resource\Exception\FolderDoesNotExistException;
+use TYPO3\CMS\Core\Resource\Exception\InsufficientFolderAccessPermissionsException;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\FolderInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -50,7 +51,11 @@ class AccessSecurity
                 // Access denied
                 return false;
             }
-            $folder = $folder->getParentFolder();
+            try {
+                $folder = $folder->getParentFolder();
+            } catch (InsufficientFolderAccessPermissionsException $e) {
+                return false;
+            }
         }
 
         return true;

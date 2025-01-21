@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace Causal\FalProtect\LinkHandling;
 
 use Causal\FalProtect\Utility\AccessSecurity;
+use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\LinkHandling\FileLinkHandler;
 use TYPO3\CMS\Core\Resource\Exception\FileDoesNotExistException;
 use TYPO3\CMS\Core\Resource\FileInterface;
@@ -35,6 +36,10 @@ class ProtectedFileLinkHandler extends FileLinkHandler
         // Link to file even if access is missing?
         $request = $GLOBALS['TYPO3_REQUEST'] ?? null;
         if ($request !== null) {
+            if (ApplicationType::fromRequest($request)->isBackend()) {
+                // No check needed in Backend
+                return $file;
+            }
             $frontendTypoScriptConfigArray = $request->getAttribute('frontend.typoscript')?->getConfigArray();
             if ((bool)($frontendTypoScriptConfigArray['typolinkLinkAccessRestrictedPages'] ?? false)) {
                 return $file;
