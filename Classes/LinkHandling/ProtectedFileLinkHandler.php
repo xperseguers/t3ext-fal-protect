@@ -40,7 +40,9 @@ class ProtectedFileLinkHandler extends FileLinkHandler
                 // No check needed in Backend
                 return $file;
             }
-            $frontendTypoScriptConfigArray = $request->getAttribute('frontend.typoscript')?->getConfigArray();
+            // Possibly deprecated since TYPO3 v12, see
+            // https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/12.0/Breaking-97816-NewTypoScriptParserInFrontend.html
+            $frontendTypoScriptConfigArray = $request->getAttribute('frontend.controller')->tmpl->setup['config.'] ?? [];
             if ((bool)($frontendTypoScriptConfigArray['typolinkLinkAccessRestrictedPages'] ?? false)) {
                 return $file;
             }
