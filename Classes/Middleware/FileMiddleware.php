@@ -57,7 +57,7 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
         if ($target !== '/' && $this->isValidTarget($target)) {
             try {
                 $file = GeneralUtility::makeInstance(ResourceFactory::class)->getFileObjectByStorageAndIdentifier(0, $target);
-            } catch (\InvalidArgumentException $e) {
+            } catch (\Exception $e) {
                 // Nothing to do
             }
         }
