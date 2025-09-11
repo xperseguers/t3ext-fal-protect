@@ -1,6 +1,7 @@
 <?php
 defined('TYPO3') || die();
 
+$typo3Version = (new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion();
 return [
     'ctrl' => [
         'title' => 'LLL:EXT:core/Resources/Private/Language/locallang_tca.xlf:sys_file_collection.folder',
@@ -36,9 +37,13 @@ return [
                 'readOnly' => true,
                 'type' => 'select',
                 'renderType' => 'selectSingle',
-                'items' => [
-                    ['', 0]
-                ],
+                'items' => $typo3Version >= 12
+                    ? [
+                        ['label' => '', 'value' => 0]
+                    ]
+                    : [
+                        ['', 0]
+                    ],
                 'foreign_table' => 'sys_file_storage',
                 'foreign_table_where' => 'ORDER BY sys_file_storage.name',
                 'size' => 1,
@@ -62,20 +67,35 @@ return [
                 'renderType' => 'selectMultipleSideBySide',
                 'size' => 5,
                 'maxitems' => 20,
-                'items' => [
-                    [
-                        'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.hide_at_login',
-                        -1
-                    ],
-                    [
-                        'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.any_login',
-                        -2
-                    ],
-                    [
-                        'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.usergroups',
-                        '--div--'
+                'items' => $typo3Version >= 12
+                    ? [
+                        [
+                            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.hide_at_login',
+                            'value' => -1
+                        ],
+                        [
+                            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.any_login',
+                            'value' => -2
+                        ],
+                        [
+                            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.usergroups',
+                            'value' => '--div--'
+                        ]
                     ]
-                ],
+                    : [
+                        [
+                            'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.hide_at_login',
+                            -1
+                        ],
+                        [
+                            'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.any_login',
+                            -2
+                        ],
+                        [
+                            'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.usergroups',
+                            '--div--'
+                        ]
+                    ],
                 'exclusiveKeys' => '-1,-2',
                 'foreign_table' => 'fe_groups',
                 'foreign_table_where' => 'ORDER BY fe_groups.title'

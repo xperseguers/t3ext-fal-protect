@@ -70,20 +70,35 @@ if (!\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('filemetadata'
             'renderType' => 'selectMultipleSideBySide',
             'size' => 5,
             'maxitems' => 20,
-            'items' => [
-                [
-                    'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.hide_at_login',
-                    -1
-                ],
-                [
-                    'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.any_login',
-                    -2
-                ],
-                [
-                    'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.usergroups',
-                    '--div--'
+            'items' => $typo3Version >= 12
+                ? [
+                    [
+                        'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.hide_at_login',
+                        'value' => -1
+                    ],
+                    [
+                        'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.any_login',
+                        'value' => -2
+                    ],
+                    [
+                        'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.usergroups',
+                        'value' => '--div--'
+                    ]
                 ]
-            ],
+                : [
+                    [
+                        'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.hide_at_login',
+                        -1
+                    ],
+                    [
+                        'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.any_login',
+                        -2
+                    ],
+                    [
+                        'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.usergroups',
+                        '--div--'
+                    ]
+                ],
             'exclusiveKeys' => '-1,-2',
             'foreign_table' => 'fe_groups',
             'foreign_table_where' => 'ORDER BY fe_groups.title'
