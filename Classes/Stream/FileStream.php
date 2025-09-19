@@ -76,6 +76,11 @@ class FileStream extends SelfEmittableLazyOpenStream
         // Try to reset time limit for big files
         set_time_limit(0);
 
+        // End output buffering to prevent that large files trigger PHP's memory limit
+        while (ob_get_level() > 0) {
+            ob_end_flush();
+        }
+
         // Start buffered download (chunks of 8K)
         $buffer = 1024 * 8;
         while (!feof($fp) && ($p = ftell($fp)) <= $end) {
