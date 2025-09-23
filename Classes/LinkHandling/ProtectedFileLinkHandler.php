@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace Causal\FalProtect\LinkHandling;
 
 use Causal\FalProtect\Utility\AccessSecurity;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\LinkHandling\FileLinkHandler;
 use TYPO3\CMS\Core\Resource\Exception\FileDoesNotExistException;
@@ -32,6 +33,11 @@ class ProtectedFileLinkHandler extends FileLinkHandler
     protected function resolveFile(array $data): ?FileInterface
     {
         $file = parent::resolveFile($data);
+
+        // No access check in cli context
+        if (Environment::isCli()) {
+            return $file;
+        }
 
         // Link to file even if access is missing?
         $request = $GLOBALS['TYPO3_REQUEST'] ?? null;
