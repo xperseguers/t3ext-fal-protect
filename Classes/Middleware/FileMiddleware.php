@@ -47,6 +47,12 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
+     public function __construct(
+        private StorageRepository $storageRepository
+    )
+    {
+    }
+
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         // Respect encoded file names like "sonderzeichenäöü.png" with configurations like [SYS][systemLocale] = "de_DE.UTF8" && [SYS][UTF8filesystem] = "true"
@@ -56,7 +62,8 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
         // Filter out what is obviously the root page or an non-authorized file name
         if ($target !== '/' && $this->isValidTarget($target)) {
             try {
-                $file = GeneralUtility::makeInstance(ResourceFactory::class)->getFileObjectByStorageAndIdentifier(0, $target);
+                $storage = $this->storageRepository->findByUid(0);
+                $file = $storage->getFileByIdentifier($target);
             } catch (\Exception $e) {
                 // Nothing to do
             }
