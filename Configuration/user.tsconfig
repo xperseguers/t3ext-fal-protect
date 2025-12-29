@@ -1,0 +1,2 @@
+options.saveDocNew.tx_falprotect_folder = 0
+options.disableDelete.tx_falprotect_folder = 1
