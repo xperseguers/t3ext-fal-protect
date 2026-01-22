@@ -9,5 +9,5 @@
                edit-on-github-branch="main"
                edit-on-github="xperseguers/t3ext-fal-protect"
                typo3-core-preferred="stable"/>
-    <project title="FAL Protect" release="1.6.5" version="1.6" copyright="2020-2025"/>
+    <project title="FAL Protect" release="1.7.0" version="1.7" copyright="2020-2026"/>
 </guides>
