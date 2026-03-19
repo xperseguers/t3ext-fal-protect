@@ -18,15 +18,32 @@ use TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider;
 use TYPO3\CMS\Core\Imaging\IconProvider\SvgSpriteIconProvider;
 use TYPO3\CMS\Core\Information\Typo3Version;
 
-return [
-    'actions-protect-folder' => (new Typo3Version())->getMajorVersion() >= 12
-        ? [
+switch ((new Typo3Version())->getMajorVersion()) {
+    case 10:
+    case 11:
+        $iconActionsProtectFolder = [
+            'provider' => SvgIconProvider::class,
+            'source' => 'EXT:fal_protect/Resources/Public/Icons/protect-folder.svg'
+        ];
+        break;
+    case 12:
+        $iconActionsProtectFolder = [
             'provider' => SvgSpriteIconProvider::class,
             'source' => 'EXT:fal_protect/Resources/Public/Icons/protect-folder-v12.svg',
             'sprite' => 'EXT:fal_protect/Resources/Public/Icons/sprites.svg#protect-folder'
-        ]
-        : [
-            'provider' => SvgIconProvider::class,
-            'source' => 'EXT:fal_protect/Resources/Public/Icons/protect-folder.svg'
-        ],
+        ];
+        break;
+    case 13:
+    case 14:
+    default:
+        $iconActionsProtectFolder = [
+            'provider' => SvgSpriteIconProvider::class,
+            'source' => 'EXT:fal_protect/Resources/Public/Icons/protect-folder-v13.svg',
+            'sprite' => 'EXT:fal_protect/Resources/Public/Icons/sprites.svg#protect-folder'
+        ];
+        break;
+}
+
+return [
+    'actions-protect-folder' => $iconActionsProtectFolder,
 ];
