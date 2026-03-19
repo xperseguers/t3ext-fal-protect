@@ -26,7 +26,6 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
-use TYPO3\CMS\Backend\FrontendBackendUserAuthentication;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Http\ImmediateResponseException;
 use TYPO3\CMS\Core\Http\Response;
@@ -189,8 +188,14 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
     protected function isFileAccessibleBackendUser(FileInterface $file): bool
     {
         // No BE user auth
-        if (!($GLOBALS['BE_USER'] instanceof FrontendBackendUserAuthentication)) {
-            return false;
+        if ((new Typo3Version())->getMajorVersion() >= 13) {
+            if (!($GLOBALS['BE_USER'] instanceof \TYPO3\CMS\Frontend\Authentication\FrontendBackendUserAuthentication)) {
+                return false;
+            }
+        } else {
+            if (!($GLOBALS['BE_USER'] instanceof \TYPO3\CMS\Backend\FrontendBackendUserAuthentication)) {
+                return false;
+            }
         }
 
         // Not logged in
