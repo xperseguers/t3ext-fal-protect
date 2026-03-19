@@ -26,7 +26,6 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
-use TYPO3\CMS\Backend\FrontendBackendUserAuthentication;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Http\ImmediateResponseException;
 use TYPO3\CMS\Core\Http\Response;
@@ -35,6 +34,7 @@ use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Resource\ProcessedFile;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
+use TYPO3\CMS\Core\Resource\StorageRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 use TYPO3\CMS\Frontend\Controller\ErrorController;
@@ -47,6 +47,12 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
+     public function __construct(
+        private StorageRepository $storageRepository
+    )
+    {
+    }
+
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         // Respect encoded file names like "sonderzeichenäöü.png" with configurations like [SYS][systemLocale] = "de_DE.UTF8" && [SYS][UTF8filesystem] = "true"
@@ -56,7 +62,17 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
         // Filter out what is obviously the root page or an non-authorized file name
         if ($target !== '/' && $this->isValidTarget($target)) {
             try {
-                $file = GeneralUtility::makeInstance(ResourceFactory::class)->getFileObjectByStorageAndIdentifier(0, $target);
+                if ((new Typo3Version())->getMajorVersion() >= 14) {
+                    if (str_starts_with($target, '/fileadmin/')) {
+                        $target = substr($target, strlen('/fileadmin'));
+                        $storage = $this->storageRepository->findByUid(1);
+                    } else {
+                        $storage = $this->storageRepository->findByUid(0);
+                    }
+                } else {
+                    $storage = $this->storageRepository->findByUid(0);
+                }
+                $file = $storage->getFileByIdentifier($target);
             } catch (\Exception $e) {
                 // Nothing to do
             }
@@ -172,8 +188,14 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
     protected function isFileAccessibleBackendUser(FileInterface $file): bool
     {
         // No BE user auth
-        if (!($GLOBALS['BE_USER'] instanceof FrontendBackendUserAuthentication)) {
-            return false;
+        if ((new Typo3Version())->getMajorVersion() >= 13) {
+            if (!($GLOBALS['BE_USER'] instanceof \TYPO3\CMS\Frontend\Authentication\FrontendBackendUserAuthentication)) {
+                return false;
+            }
+        } else {
+            if (!($GLOBALS['BE_USER'] instanceof \TYPO3\CMS\Backend\FrontendBackendUserAuthentication)) {
+                return false;
+            }
         }
 
         // Not logged in
