@@ -63,7 +63,16 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
         // Filter out what is obviously the root page or an non-authorized file name
         if ($target !== '/' && $this->isValidTarget($target)) {
             try {
-                $storage = $this->storageRepository->findByUid(0);
+                if ((new Typo3Version())->getMajorVersion() >= 14) {
+                    if (str_starts_with($target, '/fileadmin/')) {
+                        $target = substr($target, strlen('/fileadmin'));
+                        $storage = $this->storageRepository->findByUid(1);
+                    } else {
+                        $storage = $this->storageRepository->findByUid(0);
+                    }
+                } else {
+                    $storage = $this->storageRepository->findByUid(0);
+                }
                 $file = $storage->getFileByIdentifier($target);
             } catch (\Exception $e) {
                 // Nothing to do
