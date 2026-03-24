@@ -69,10 +69,10 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
                     } else {
                         $storage = $this->storageRepository->findByUid(0);
                     }
+                    $file = $storage->getFileByIdentifier($target);
                 } else {
-                    $storage = $this->storageRepository->findByUid(0);
+                    $file = GeneralUtility::makeInstance(ResourceFactory::class)->getFileObjectByStorageAndIdentifier(0, $target);
                 }
-                $file = $storage->getFileByIdentifier($target);
             } catch (\Exception $e) {
                 // Nothing to do
             }
