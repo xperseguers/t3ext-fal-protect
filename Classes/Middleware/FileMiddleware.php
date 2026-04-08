@@ -47,10 +47,13 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
+    private StorageRepository $storageRepository;
+
      public function __construct(
-        private StorageRepository $storageRepository
+        StorageRepository $storageRepository
     )
     {
+        $this->storageRepository = $storageRepository;
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
