@@ -47,13 +47,10 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
-    private StorageRepository $storageRepository;
-
      public function __construct(
-        StorageRepository $storageRepository
+        private StorageRepository $storageRepository
     )
     {
-        $this->storageRepository = $storageRepository;
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
@@ -216,13 +213,8 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
         }
 
         foreach ($GLOBALS['BE_USER']->getFileMountRecords() as $fileMount) {
-            if ((new Typo3Version())->getMajorVersion() >= 12) {
-                $identifier = $fileMount['identifier'];
-            } else {
-                $identifier = $fileMount['base'] . ':' . $fileMount['path'];
-            }
             /** @var Folder $fileMountObject */
-            $fileMountObject = GeneralUtility::makeInstance(ResourceFactory::class)->getFolderObjectFromCombinedIdentifier($identifier);
+            $fileMountObject = GeneralUtility::makeInstance(ResourceFactory::class)->getFolderObjectFromCombinedIdentifier($fileMount['identifier']);
             if ($fileMountObject->getStorage()->getUid() === $file->getStorage()->getUid()) {
                 if ($this->isFileInFolderOrSubFolder($fileMountObject, $file)) {
                     return true;

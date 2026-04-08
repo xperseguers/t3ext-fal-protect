@@ -1,5 +1,5 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -19,17 +19,10 @@ use TYPO3\CMS\Core\Imaging\IconProvider\SvgSpriteIconProvider;
 use TYPO3\CMS\Core\Information\Typo3Version;
 
 switch ((new Typo3Version())->getMajorVersion()) {
-    case 10:
-    case 11:
-        $iconActionsProtectFolder = [
-            'provider' => SvgIconProvider::class,
-            'source' => 'EXT:fal_protect/Resources/Public/Icons/protect-folder.svg'
-        ];
-        break;
     case 12:
         $iconActionsProtectFolder = [
             'provider' => SvgSpriteIconProvider::class,
-            'source' => 'EXT:fal_protect/Resources/Public/Icons/protect-folder-v12.svg',
+            'source' => 'EXT:fal_protect/Resources/Public/Icons/protect-folder.svg',
             'sprite' => 'EXT:fal_protect/Resources/Public/Icons/sprites.svg#protect-folder'
         ];
         break;
