@@ -6,7 +6,7 @@ namespace Causal\FalProtect\Stream;
 
 use TYPO3\CMS\Core\Http\SelfEmittableLazyOpenStream;
 
-class FileStream extends SelfEmittableLazyOpenStream
+readonly class FileStream extends SelfEmittableLazyOpenStream
 {
     /**
      * @return void
