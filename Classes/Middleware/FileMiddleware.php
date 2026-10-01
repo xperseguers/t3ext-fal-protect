@@ -66,12 +66,7 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
         if ($target !== '/' && $this->isValidTarget($target)) {
             try {
                 if ($typo3Version >= 14) {
-                    if (str_starts_with($target, '/fileadmin/')) {
-                        $target = substr($target, strlen('/fileadmin'));
-                        $storage = $this->storageRepository->findByUid(1);
-                    } else {
-                        $storage = $this->storageRepository->findByUid(0);
-                    }
+                    $storage = $this->storageRepository->getStorageObject(0, [], $target);
                     $file = $storage->getFileByIdentifier($target);
                 } else {
                     $file = GeneralUtility::makeInstance(ResourceFactory::class)->getFileObjectByStorageAndIdentifier(0, $target);
