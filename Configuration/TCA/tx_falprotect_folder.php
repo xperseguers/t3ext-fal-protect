@@ -15,7 +15,6 @@ return [
             'ignoreWebMountRestriction' => true,
             'ignoreRootLevelRestriction' => true,
         ],
-        'searchFields' => ''
     ],
     'interface' => [],
     'types' => [

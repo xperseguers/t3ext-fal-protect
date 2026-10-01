@@ -31,7 +31,6 @@ switch ((new Typo3Version())->getMajorVersion()) {
     default:
         $iconActionsProtectFolder = [
             'provider' => SvgSpriteIconProvider::class,
-            'source' => 'EXT:fal_protect/Resources/Public/Icons/protect-folder-v13.svg',
             'sprite' => 'EXT:fal_protect/Resources/Public/Icons/sprites.svg#protect-folder'
         ];
         break;
