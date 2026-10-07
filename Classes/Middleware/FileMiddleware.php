@@ -51,9 +51,7 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
 
      public function __construct(
         private StorageRepository $storageRepository
-    )
-    {
-    }
+    ) {}
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
@@ -118,6 +116,11 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
                 $headers['Pragma'] = 'no-cache';
             }
 
+            $settings = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('fal_protect') ?? [];
+            if ((bool)($settings['content_security_policy'] ?? true)) {
+                $headers['Content-Security-Policy'] = $this->getContentSecurityPolicy($fileName);
+            }
+
             $lastModified = (int)filemtime($fileName);
             $headers['Last-Modified'] = gmdate('D, d M Y H:i:s', $lastModified) . ' GMT';
             // Answered here for every delivery mode: Apache does not re-evaluate conditional
@@ -148,6 +151,29 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
     }
 
     /**
+     * Requests to protected files are answered by TYPO3, so the headers of the .htaccess file
+     * TYPO3 creates in /fileadmin/ no longer apply. This returns the same policies, which keep
+     * uploaded HTML and SVG files from running scripts in the context of the website.
+     *
+     * @param string $fileName
+     * @return string
+     * @see EXT:install/Resources/Private/FolderStructureTemplateFiles/resources-root-htaccess
+     */
+    protected function getContentSecurityPolicy(string $fileName): string
+    {
+        switch (strtolower(pathinfo($fileName, PATHINFO_EXTENSION))) {
+            case 'pdf':
+                // Strict rules block Safari showing PDF documents
+                return "default-src 'self' 'unsafe-inline'; script-src 'none'; object-src 'self'; plugin-types application/pdf;";
+            case 'svg':
+                // Allows using inline styles when serving SVG files
+                return "default-src 'self'; script-src 'none'; style-src 'unsafe-inline'; object-src 'none'; sandbox;";
+            default:
+                return "default-src 'self'; script-src 'none'; style-src 'none'; object-src 'none'; sandbox;";
+        }
+    }
+
+    /*
      * Hands the transfer of an authorized file over to the web server, so that the PHP worker
      * is released as soon as the access check is done instead of being held for the whole
      * download. Returns null if the file has to be streamed by PHP.

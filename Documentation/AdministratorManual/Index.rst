@@ -153,3 +153,22 @@ By default, the extension will return a ``404 Not Found`` error if a file is not
 found. This is a security measure to prevent attackers from guessing file names.
 If you prefer to return a ``403 Forbidden`` error instead, you can do so by
 changing the default setting in the extension configuration.
+
+
+.. _admin-content-security-policy:
+
+Content Security Policy
+-----------------------
+
+TYPO3 creates a file :file:`/fileadmin/.htaccess` that sends a
+``Content-Security-Policy`` header for every file in the storage. It keeps
+uploaded HTML or SVG files from running scripts in the context of your website.
+
+As requests to protected files are rewritten to :file:`index.php`, this
+:file:`.htaccess` file no longer applies to them. The extension therefore sends
+the same policies itself: a sandbox for all files, relaxed to allow inline
+styles for SVG files and the PDF viewer for PDF files.
+
+If you prefer to send your own policy, e.g., from the web server configuration,
+disable :guilabel:`Send Content-Security-Policy` (``content_security_policy``)
+in the extension configuration.

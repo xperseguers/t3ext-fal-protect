@@ -1,6 +1,9 @@
 # cat=basic/enable/10; type=boolean; label=LLL:EXT:fal_protect/Resources/Private/Language/locallang_db.xlf:settings.return_403
 return_403 = 0
 
+# cat=basic/enable/20; type=boolean; label=LLL:EXT:fal_protect/Resources/Private/Language/locallang_db.xlf:settings.content_security_policy
+content_security_policy = 1
+
 # cat=basic/enable/20; type=options[PHP=php,X-Sendfile=x-sendfile,X-Accel-Redirect=x-accel-redirect]; label=LLL:EXT:fal_protect/Resources/Private/Language/locallang_db.xlf:settings.delivery
 delivery = php
 
