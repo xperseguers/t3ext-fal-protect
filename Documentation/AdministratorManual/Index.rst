@@ -29,7 +29,27 @@ Edit file :file:`.htaccess` (or your virtual host) to read:
    RewriteCond %{REQUEST_URI} !/fileadmin/_processed_/.*$
    RewriteRule ^fileadmin/.*$ %{ENV:CWD}index.php [QSA,L]
 
-**BEWARE:** Be sure to add this rule before any other related rule.
+**BEWARE:** The position of this rule matters. With the :file:`.htaccess` file
+shipped by TYPO3, add it *after* the "Access block for folders" and hidden
+files rules, so that these keep blocking :file:`_recycler_/`, :file:`_temp_/`
+and the like, but *before* the rule that stops rewrite processing for known
+directories, which would otherwise never let the request reach TYPO3:
+
+.. code-block:: apache
+
+   # Access block for folders
+   RewriteRule _(?:recycler|temp)_/ - [F]
+   # ...
+
+   # fal_protect
+   RewriteCond %{REQUEST_URI} !/fileadmin/_processed_/.*$
+   RewriteRule ^fileadmin/.*$ %{ENV:CWD}index.php [QSA,L]
+
+   # Stop rewrite processing, if we are in any known directory
+   RewriteRule ^(?:fileadmin/|typo3conf/|typo3temp/|uploads/) - [L]
+
+Should a request for a file within a recycler or temporary folder reach TYPO3
+nonetheless, the extension refuses it as well.
 
 
 .. _admin-manual-nginx:
