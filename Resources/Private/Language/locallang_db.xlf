@@ -6,6 +6,12 @@
             <trans-unit id="settings.return_403">
                 <source>Return "403 Forbidden": Default: Off = "404 Not Found".</source>
             </trans-unit>
+            <trans-unit id="settings.delivery">
+                <source>File delivery: Who transfers the file after the access check. "X-Sendfile" (Apache with mod_xsendfile) and "X-Accel-Redirect" (Nginx) need web server configuration, see the manual. Default: PHP.</source>
+            </trans-unit>
+            <trans-unit id="settings.delivery_internal_location">
+                <source>Internal location (X-Accel-Redirect only): Nginx location marked as "internal" that maps to the public directory.</source>
+            </trans-unit>
             <trans-unit id="clickmenu.folderPermissions">
                 <source>Folder permissions</source>
             </trans-unit>

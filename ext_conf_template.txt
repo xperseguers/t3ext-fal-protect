@@ -1,2 +1,8 @@
 # cat=basic/enable/10; type=boolean; label=LLL:EXT:fal_protect/Resources/Private/Language/locallang_db.xlf:settings.return_403
 return_403 = 0
+
+# cat=basic/enable/20; type=options[PHP=php,X-Sendfile=x-sendfile,X-Accel-Redirect=x-accel-redirect]; label=LLL:EXT:fal_protect/Resources/Private/Language/locallang_db.xlf:settings.delivery
+delivery = php
+
+# cat=basic/enable/30; type=string; label=LLL:EXT:fal_protect/Resources/Private/Language/locallang_db.xlf:settings.delivery_internal_location
+delivery_internal_location = /_fal_protect_internal/
