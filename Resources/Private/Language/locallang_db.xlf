@@ -6,6 +6,9 @@
             <trans-unit id="settings.return_403">
                 <source>Return "403 Forbidden": Default: Off = "404 Not Found".</source>
             </trans-unit>
+            <trans-unit id="settings.content_security_policy">
+                <source>Send Content-Security-Policy: Same policies as the .htaccess file TYPO3 creates in /fileadmin/, which no longer applies to protected files. Default: On.</source>
+            </trans-unit>
             <trans-unit id="clickmenu.folderPermissions">
                 <source>Folder permissions</source>
             </trans-unit>
