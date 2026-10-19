@@ -117,6 +117,11 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
                 $headers['Pragma'] = 'no-cache';
             }
 
+            $settings = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('fal_protect') ?? [];
+            if ((bool)($settings['content_security_policy'] ?? true)) {
+                $headers['Content-Security-Policy'] = $this->getContentSecurityPolicy($fileName);
+            }
+
             if ($typo3Version >= 14) {
                 $stream = new FileStream($fileName);
             } else {
@@ -126,6 +131,29 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
         }
 
         return $handler->handle($request);
+    }
+
+    /**
+     * Requests to protected files are answered by TYPO3, so the headers of the .htaccess file
+     * TYPO3 creates in /fileadmin/ no longer apply. This returns the same policies, which keep
+     * uploaded HTML and SVG files from running scripts in the context of the website.
+     *
+     * @param string $fileName
+     * @return string
+     * @see EXT:install/Resources/Private/FolderStructureTemplateFiles/resources-root-htaccess
+     */
+    protected function getContentSecurityPolicy(string $fileName): string
+    {
+        switch (strtolower(pathinfo($fileName, PATHINFO_EXTENSION))) {
+            case 'pdf':
+                // Strict rules block Safari showing PDF documents
+                return "default-src 'self' 'unsafe-inline'; script-src 'none'; object-src 'self'; plugin-types application/pdf;";
+            case 'svg':
+                // Allows using inline styles when serving SVG files
+                return "default-src 'self'; script-src 'none'; style-src 'unsafe-inline'; object-src 'none'; sandbox;";
+            default:
+                return "default-src 'self'; script-src 'none'; style-src 'none'; object-src 'none'; sandbox;";
+        }
     }
 
     /**
