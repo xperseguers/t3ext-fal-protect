@@ -55,6 +55,7 @@ restrictions (visibility, user groups and dates of publication).
    Introduction/Index
    UsersManual/Index
    AdministratorManual/Index
+   FileDelivery/Index
    KnownProblems/Index
    Links
 

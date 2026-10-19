@@ -28,6 +28,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Http\ImmediateResponseException;
 use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Information\Typo3Version;
@@ -50,9 +51,7 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
 
      public function __construct(
         private StorageRepository $storageRepository
-    )
-    {
-    }
+    ) {}
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
@@ -87,8 +86,8 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
             $eventDispatcher->dispatch($securityCheckEvent);
             $isAccessible = $securityCheckEvent->isAccessible();
 
+            $settings = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('fal_protect') ?? [];
             if (!$isAccessible) {
-                $settings = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('fal_protect') ?? [];
                 if ((bool)($settings['return_403'] ?? false)) {
                     $this->accessDeniedAction($request);
                 }
@@ -120,6 +119,24 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
             $settings = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('fal_protect') ?? [];
             if ((bool)($settings['content_security_policy'] ?? true)) {
                 $headers['Content-Security-Policy'] = $this->getContentSecurityPolicy($fileName);
+            }
+
+            $lastModified = (int)filemtime($fileName);
+            $headers['Last-Modified'] = gmdate('D, d M Y H:i:s', $lastModified) . ' GMT';
+            // Answered here for every delivery mode: Apache does not re-evaluate conditional
+            // requests after an X-Sendfile handover
+            if ($this->isNotModified($request, $lastModified)) {
+                return new Response('php://temp', 304, $headers);
+            }
+
+            $serverResponse = $this->createServerDeliveryResponse(
+                (string)($settings['delivery'] ?? 'php'),
+                (string)($settings['delivery_internal_location'] ?? '/_fal_protect_internal/'),
+                $fileName,
+                $headers
+            );
+            if ($serverResponse !== null) {
+                return $serverResponse;
             }
 
             if ($typo3Version >= 14) {
@@ -154,6 +171,59 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
             default:
                 return "default-src 'self'; script-src 'none'; style-src 'none'; object-src 'none'; sandbox;";
         }
+    }
+
+    /*
+     * Hands the transfer of an authorized file over to the web server, so that the PHP worker
+     * is released as soon as the access check is done instead of being held for the whole
+     * download. Returns null if the file has to be streamed by PHP.
+     *
+     * @param string $delivery One of "php", "x-sendfile" or "x-accel-redirect"
+     * @param string $internalLocation Nginx location marked as "internal" that maps to the public path
+     * @param string $fileName Absolute path of the file
+     * @param array<string, string> $headers
+     * @return ResponseInterface|null
+     */
+    protected function createServerDeliveryResponse(
+        string $delivery,
+        string $internalLocation,
+        string $fileName,
+        array $headers
+    ): ?ResponseInterface
+    {
+        switch ($delivery) {
+            case 'x-sendfile':
+                // mod_xsendfile checks the path against XSendFilePath after resolving it, so
+                // symlinks (e.g., a shared fileadmin of a deployment tool) must be resolved here
+                $realPath = realpath($fileName);
+                if ($realPath === false) {
+                    return null;
+                }
+                $headers['X-Sendfile'] = $realPath;
+                return new Response('php://temp', 200, $headers);
+
+            case 'x-accel-redirect':
+                $publicPath = Environment::getPublicPath() . '/';
+                if ($internalLocation === '' || !str_starts_with($fileName, $publicPath)) {
+                    return null;
+                }
+                $relativePath = substr($fileName, strlen($publicPath));
+                $headers['X-Accel-Redirect'] = '/' . trim($internalLocation, '/') . '/'
+                    . implode('/', array_map('rawurlencode', explode('/', $relativePath)));
+                return new Response('php://temp', 200, $headers);
+        }
+
+        return null;
+    }
+
+    protected function isNotModified(ServerRequestInterface $request, int $lastModified): bool
+    {
+        $ifModifiedSince = $request->getHeaderLine('If-Modified-Since');
+        if ($ifModifiedSince === '') {
+            return false;
+        }
+        $since = strtotime($ifModifiedSince);
+        return $since !== false && $lastModified <= $since;
     }
 
     /**

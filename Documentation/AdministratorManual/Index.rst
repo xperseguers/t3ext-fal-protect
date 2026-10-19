@@ -76,6 +76,12 @@ or, if that better fits your setup, like that:
    }
 
 
+.. tip::
+
+   By default, files are delivered by PHP, which keeps a PHP worker busy for
+   the whole download. On busy websites, let the web server transfer the files
+   instead, see :ref:`file-delivery`.
+
 .. _admin-manual-exclude-fields:
 
 Access to exclude fields
