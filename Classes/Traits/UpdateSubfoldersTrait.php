@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -21,11 +22,9 @@ use TYPO3\CMS\Core\Resource\Folder;
 
 /**
  * Class UpdateSubfoldersTrait
- * @package Causal\FalProtect\Traits
  */
 trait UpdateSubfoldersTrait
 {
-
     /**
      * @var array
      */

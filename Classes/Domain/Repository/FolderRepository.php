@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -24,11 +25,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class FolderRepository
- * @package Causal\FalProtect\Domain\Repository
  */
 class FolderRepository implements SingletonInterface
 {
-
     /**
      * @var string
      */
@@ -178,8 +177,7 @@ class FolderRepository implements SingletonInterface
         string $identifier,
         string $hashedIdentifier,
         ?string $feGroups = null
-    ): array
-    {
+    ): array {
         $emptyRecord = [
             'pid' => 0,
             'crdate' => $GLOBALS['EXEC_TIME'],

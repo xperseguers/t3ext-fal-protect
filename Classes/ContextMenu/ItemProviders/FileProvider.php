@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -22,11 +23,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class FileProvider
- * @package Causal\FalProtect\ContextMenu\ItemProviders
  */
 class FileProvider extends \TYPO3\CMS\Filelist\ContextMenu\ItemProviders\FileProvider
 {
-
     /**
      * Initialize file object
      */
@@ -66,7 +65,7 @@ class FileProvider extends \TYPO3\CMS\Filelist\ContextMenu\ItemProviders\FilePro
     {
         if ($itemName === 'edit' && $this->isFolder()) {
             $attributes = [
-                'data-callback-module' => '@causal/fal-protect/context-menu-actions'
+                'data-callback-module' => '@causal/fal-protect/context-menu-actions',
             ];
         } else {
             $attributes = parent::getAdditionalAttributes($itemName);

@@ -1,4 +1,5 @@
 <?php
+
 defined('TYPO3') || die();
 
 return [
@@ -19,7 +20,7 @@ return [
     'interface' => [],
     'types' => [
         1 => [
-            'showitem' => 'storage, fe_groups'
+            'showitem' => 'storage, fe_groups',
         ],
     ],
     'palettes' => [],
@@ -36,22 +37,22 @@ return [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'items' => [
-                    ['label' => '', 'value' => 0]
+                    ['label' => '', 'value' => 0],
                 ],
                 'foreign_table' => 'sys_file_storage',
                 'foreign_table_where' => 'ORDER BY sys_file_storage.name',
                 'size' => 1,
                 'minitems' => 0,
-                'maxitems' => 1
-            ]
+                'maxitems' => 1,
+            ],
         ],
         'identifier' => [
             'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_tca.xlf:sys_file.identifier',
             'config' => [
                 'readOnly' => true,
                 'type' => 'input',
-                'size' => 30
-            ]
+                'size' => 30,
+            ],
         ],
         'fe_groups' => [
             'exclude' => true,
@@ -64,21 +65,21 @@ return [
                 'items' => [
                     [
                         'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.hide_at_login',
-                        'value' => -1
+                        'value' => -1,
                     ],
                     [
                         'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.any_login',
-                        'value' => -2
+                        'value' => -2,
                     ],
                     [
                         'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.usergroups',
-                        'value' => '--div--'
-                    ]
+                        'value' => '--div--',
+                    ],
                 ],
                 'exclusiveKeys' => '-1,-2',
                 'foreign_table' => 'fe_groups',
-                'foreign_table_where' => 'ORDER BY fe_groups.title'
-            ]
+                'foreign_table_where' => 'ORDER BY fe_groups.title',
+            ],
         ],
     ],
 ];

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -26,11 +27,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class CoreImagingEventListener
- * @package Causal\FalProtect\EventListener
  */
 class CoreImagingEventListener
 {
-
     /**
      * @param ModifyIconForResourcePropertiesEvent $event
      */

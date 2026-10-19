@@ -9,7 +9,6 @@ use TYPO3\CMS\Core\Http\SelfEmittableLazyOpenStream;
 readonly class FileStream extends SelfEmittableLazyOpenStream
 {
     /**
-     * @return void
      * @see https://www.techstruggles.com/mp3-streaming-for-apple-iphone-with-php-readfile-file_get_contents-fail/
      */
     public function emit()
@@ -23,9 +22,9 @@ readonly class FileStream extends SelfEmittableLazyOpenStream
 
         if (isset($_SERVER['HTTP_RANGE'])) {
             // Extract the range string
-            list(, $range) = explode('=', $_SERVER['HTTP_RANGE'], 2);
+            [, $range] = explode('=', $_SERVER['HTTP_RANGE'], 2);
             // Make sure the client has not sent us a multibyte range
-            if (strpos($range, ',') !== false) {
+            if (str_contains($range, ',')) {
                 // TODO: Should this be issued here, or should the first
                 // range be used? Or should the header be ignored and
                 // we output the whole content?
@@ -40,12 +39,12 @@ readonly class FileStream extends SelfEmittableLazyOpenStream
             // and make sure to get the end byte if specified
             if (substr($range, 0, 1) === '-') {
                 // The n-number of the last bytes is requested
-                $c_start = $size - (int) substr($range, 1);
+                $c_start = $size - (int)substr($range, 1);
                 $c_end = $end;
             } else {
                 $range = explode('-', $range);
-                $c_start = (int) $range[0];
-                $c_end = !empty($range[1] ?? '') ? (int) $range[1] : $size;
+                $c_start = (int)$range[0];
+                $c_end = !empty($range[1] ?? '') ? (int)$range[1] : $size;
             }
 
             /* Check the range and make sure it is treated according to the specs.

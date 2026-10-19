@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -30,11 +31,9 @@ use TYPO3\CMS\Core\Resource\Folder;
 
 /**
  * Class CoreResourceStorageEventListener
- * @package Causal\FalProtect\EventListener
  */
 class CoreResourceStorageEventListener
 {
-
     use UpdateSubfoldersTrait;
 
     /**

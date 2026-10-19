@@ -1,50 +1,73 @@
 {
-  "name": "causal/fal-protect",
-  "type": "typo3-cms-extension",
-  "description": "FAL Protect - Protect everything within /fileadmin/ based on associated folder and file restrictions (visibility, user groups and dates of publication).",
-
-  "keywords": [
-    "TYPO3 CMS",
-    "FAL",
-    "files",
-    "directories",
-    "secure",
-    "security",
-    "protection"
-  ],
-  "support": {
-    "docs": "https://docs.typo3.org/p/causal/fal-protect/main/en-us/",
-    "issues": "https://github.com/xperseguers/t3ext-fal-protect/issues",
-    "source": "https://github.com/xperseguers/t3ext-fal-protect"
-  },
-  "authors": [
-    {
-      "name": "Xavier Perseguers",
-      "email": "xavier@causal.ch",
-      "homepage": "https://www.causal.ch",
-      "role": "Developer"
-    }
-  ],
-  "license": "GPL-2.0-or-later",
-  "require": {
-    "php": ">=8.2.0 <=8.5.99",
-    "typo3/cms-core": "^12 || ^13 || ^14"
-  },
-  "autoload": {
-    "psr-4": {
-      "Causal\\FalProtect\\": "Classes/"
-    }
-  },
-  "extra": {
-    "branch-alias": {
-      "dev-main": "1.9.x-dev"
-    },
-    "typo3/cms": {
-      "extension-key": "fal_protect",
-      "version": "1.9.0-dev",
-      "Package": {
-        "providesPackages": {}
-      }
-    }
-  }
+	"name": "causal/fal-protect",
+	"type": "typo3-cms-extension",
+	"description": "FAL Protect - Protect everything within /fileadmin/ based on associated folder and file restrictions (visibility, user groups and dates of publication).",
+	"keywords": [
+		"TYPO3 CMS",
+		"FAL",
+		"files",
+		"directories",
+		"secure",
+		"security",
+		"protection"
+	],
+	"support": {
+		"docs": "https://docs.typo3.org/p/causal/fal-protect/main/en-us/",
+		"issues": "https://github.com/xperseguers/t3ext-fal-protect/issues",
+		"source": "https://github.com/xperseguers/t3ext-fal-protect"
+	},
+	"authors": [
+		{
+			"name": "Xavier Perseguers",
+			"email": "xavier@causal.ch",
+			"homepage": "https://www.causal.ch",
+			"role": "Developer"
+		}
+	],
+	"license": "GPL-2.0-or-later",
+	"require": {
+		"php": ">=8.2.0 <=8.5.99",
+		"typo3/cms-core": "^12 || ^13 || ^14"
+	},
+	"require-dev": {
+		"friendsofphp/php-cs-fixer": "~3.95.10",
+		"phpstan/phpstan": "2.1.51",
+		"phpunit/phpunit": "^12.5",
+		"rector/rector": "2.4.2"
+	},
+	"autoload": {
+		"psr-4": {
+			"Causal\\FalProtect\\": "Classes/"
+		}
+	},
+	"extra": {
+		"branch-alias": {
+			"dev-main": "1.9.x-dev"
+		},
+		"typo3/cms": {
+			"extension-key": "fal_protect",
+			"version": "1.9.0-dev",
+			"Package": {
+				"providesPackages": {}
+			},
+			"app-dir": ".Build",
+			"web-dir": ".Build/public"
+		}
+	},
+	"config": {
+		"allow-plugins": {
+			"typo3/cms-composer-installers": true,
+			"typo3/class-alias-loader": true
+		},
+		"bin-dir": ".Build/bin",
+		"vendor-dir": ".Build/vendor"
+	},
+	"scripts": {
+		"cs": [
+			"php-cs-fixer fix -v --dry-run --config .php-cs-fixer.php"
+		],
+		"csfix": [
+			"php-cs-fixer fix -v --config .php-cs-fixer.php"
+		]
+	}
 }

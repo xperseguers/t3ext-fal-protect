@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -27,11 +28,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class EditFolderController
- * @package Causal\FalProtect\Controller\Folder
  */
 class EditFolderController
 {
-
     /**
      * The original target, but validated.
      *
@@ -96,10 +95,10 @@ class EditFolderController
         $urlParameters = [
             'edit' => [
                 $this->folderRepository->tableName => [
-                    $record['uid'] => 'edit'
-                ]
+                    $record['uid'] => 'edit',
+                ],
             ],
-            'returnUrl' => $this->returnUrl
+            'returnUrl' => $this->returnUrl,
         ];
         $url = (string)$this->uriBuilder->buildUriFromRoute('record_edit', $urlParameters);
 

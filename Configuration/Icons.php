@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -14,7 +15,6 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-use TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider;
 use TYPO3\CMS\Core\Imaging\IconProvider\SvgSpriteIconProvider;
 use TYPO3\CMS\Core\Information\Typo3Version;
 
@@ -23,7 +23,7 @@ switch ((new Typo3Version())->getMajorVersion()) {
         $iconActionsProtectFolder = [
             'provider' => SvgSpriteIconProvider::class,
             'source' => 'EXT:fal_protect/Resources/Public/Icons/protect-folder.svg',
-            'sprite' => 'EXT:fal_protect/Resources/Public/Icons/sprites.svg#protect-folder'
+            'sprite' => 'EXT:fal_protect/Resources/Public/Icons/sprites.svg#protect-folder',
         ];
         break;
     case 13:
@@ -31,7 +31,7 @@ switch ((new Typo3Version())->getMajorVersion()) {
     default:
         $iconActionsProtectFolder = [
             'provider' => SvgSpriteIconProvider::class,
-            'sprite' => 'EXT:fal_protect/Resources/Public/Icons/sprites.svg#protect-folder'
+            'sprite' => 'EXT:fal_protect/Resources/Public/Icons/sprites.svg#protect-folder',
         ];
         break;
 }

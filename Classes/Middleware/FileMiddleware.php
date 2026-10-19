@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -43,13 +44,12 @@ use TYPO3\CMS\Frontend\Controller\ErrorController;
 
 /**
  * Class FileMiddleware
- * @package Causal\FalProtect\Middleware
  */
 class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
-     public function __construct(
+    public function __construct(
         private StorageRepository $storageRepository
     ) {}
 
@@ -189,8 +189,7 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
         string $internalLocation,
         string $fileName,
         array $headers
-    ): ?ResponseInterface
-    {
+    ): ?ResponseInterface {
         switch ($delivery) {
             case 'x-sendfile':
                 // mod_xsendfile checks the path against XSendFilePath after resolving it, so
@@ -261,8 +260,7 @@ class FileMiddleware implements MiddlewareInterface, LoggerAwareInterface
         FileInterface $file,
         FrontendUserAuthentication $user,
         int &$maxAge
-    ): bool
-    {
+    ): bool {
         // This check is supposed to never succeed if the processed folder is properly
         // checked at the Web Server level to allow direct access
         if ($file->getStorage()->isWithinProcessingFolder($file->getIdentifier())) {

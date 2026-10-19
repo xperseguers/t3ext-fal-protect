@@ -1,4 +1,5 @@
 <?php
+
 return [
     'frontend' => [
         'causal/fal-protect/fetch-file' => [

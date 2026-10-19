@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -20,11 +21,9 @@ use TYPO3\CMS\Backend\Form\FormDataProviderInterface;
 
 /**
  * Class CrashOnNewFolderRecord
- * @package Causal\FalProtect\Backend\FormDataProvider
  */
 class CrashOnNewFolderRecord implements FormDataProviderInterface
 {
-
     /**
      * Add form data to result array
      *

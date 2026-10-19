@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -20,11 +21,9 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 
 /**
  * Class DataHandler
- * @package Causal\FalProtect\Hooks
  */
 class DataHandler
 {
-
     /**
      * Triggers updateFolderTree after updating permissions on a folder
      *
@@ -40,8 +39,7 @@ class DataHandler
         $id,
         array $fieldArray,
         \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler
-    ): void
-    {
+    ): void {
         if ($table === 'tx_falprotect_folder') {
             BackendUtility::setUpdateSignal('updateFolderTree');
         }

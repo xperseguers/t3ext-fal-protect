@@ -1,4 +1,5 @@
 <?php
+
 defined('TYPO3') || die();
 
 $tempColumns = [
@@ -35,7 +36,7 @@ if (!\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('filemetadata'
         'label' => 'LLL:EXT:fal_protect/Resources/Private/Language/locallang_db.xlf:sys_file_metadata.visible',
         'config' => [
             'type' => 'check',
-            'default' => '1'
+            'default' => '1',
         ],
     ];
     $tempColumns['fe_groups'] = [
@@ -49,21 +50,21 @@ if (!\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('filemetadata'
             'items' => [
                 [
                     'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.hide_at_login',
-                    'value' => -1
+                    'value' => -1,
                 ],
                 [
                     'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.any_login',
-                    'value' => -2
+                    'value' => -2,
                 ],
                 [
                     'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.usergroups',
-                    'value' => '--div--'
-                ]
+                    'value' => '--div--',
+                ],
             ],
             'exclusiveKeys' => '-1,-2',
             'foreign_table' => 'fe_groups',
-            'foreign_table_where' => 'ORDER BY fe_groups.title'
-        ]
+            'foreign_table_where' => 'ORDER BY fe_groups.title',
+        ],
     ];
 
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes(
@@ -82,7 +83,7 @@ if (!\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('filemetadata'
 
 $GLOBALS['TCA']['sys_file_metadata']['palettes']['access'] = [
     'label' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.palettes.access',
-    'showitem' => 'starttime, endtime, --linebreak--, fe_groups'
+    'showitem' => 'starttime, endtime, --linebreak--, fe_groups',
 ];
 foreach ($GLOBALS['TCA']['sys_file_metadata']['types'] as &$configuration) {
     $configuration['showitem'] = str_replace('fe_groups,', '--palette--;;access,', $configuration['showitem']);
