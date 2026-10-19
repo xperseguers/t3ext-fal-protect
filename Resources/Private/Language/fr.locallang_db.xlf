@@ -6,6 +6,15 @@
             <trans-unit id="settings.return_403">
                 <target>Renvoie "403 Forbidden": Par défaut : Off = "404 Not Found".</target>
             </trans-unit>
+            <trans-unit id="settings.content_security_policy">
+                <target>Envoyer Content-Security-Policy : Mêmes politiques que le fichier .htaccess créé par TYPO3 dans /fileadmin/, qui ne s'applique plus aux fichiers protégés. Par défaut : On.</target>
+            </trans-unit>
+            <trans-unit id="settings.delivery">
+                <target>Livraison des fichiers : Qui transfère le fichier après la vérification d'accès. "X-Sendfile" (Apache avec mod_xsendfile) et "X-Accel-Redirect" (Nginx) nécessitent une configuration du serveur web, voir le manuel. Par défaut : PHP.</target>
+            </trans-unit>
+            <trans-unit id="settings.delivery_internal_location">
+                <target>Emplacement interne (X-Accel-Redirect uniquement) : Location Nginx marquée comme "internal" qui pointe vers le répertoire public.</target>
+            </trans-unit>
             <trans-unit id="clickmenu.folderPermissions">
                 <target>Autorisations du dossier</target>
             </trans-unit>
