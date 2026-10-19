@@ -21,6 +21,7 @@ use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Resource\Exception\FolderDoesNotExistException;
 use TYPO3\CMS\Core\Resource\Exception\InsufficientFolderAccessPermissionsException;
 use TYPO3\CMS\Core\Resource\FileInterface;
+use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Resource\FolderInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -45,6 +46,13 @@ class AccessSecurity
         // InsufficientFolderAccessPermissionsException does not seem to be throwable in that context
         $folderRepository = GeneralUtility::makeInstance(FolderRepository::class);
         while ($folder->getIdentifier() !== '/') {
+            // Deleted and temporary files are never meant to be public, whatever the order of
+            // the web server rules
+            if ($folder instanceof Folder
+                && in_array($folder->getRole(), [FolderInterface::ROLE_RECYCLER, FolderInterface::ROLE_TEMPORARY], true)
+            ) {
+                return false;
+            }
             $record = $folderRepository->findOneByObject($folder, false);
             $accessGroups = GeneralUtility::intExplode(',', $record['fe_groups'] ?? '', true);
             if (!empty($accessGroups) && empty(array_intersect($accessGroups, $userGroups))) {
