@@ -40,7 +40,11 @@
       "dev-main": "1.9.x-dev"
     },
     "typo3/cms": {
-      "extension-key": "fal_protect"
+      "extension-key": "fal_protect",
+      "version": "1.9.0-dev",
+      "Package": {
+        "providesPackages": {}
+      }
     }
   }
 }
