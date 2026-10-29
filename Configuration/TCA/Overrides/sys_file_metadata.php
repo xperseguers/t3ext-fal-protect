@@ -30,7 +30,7 @@ $tempColumns = [
     ],
 ];
 
-if (!\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('filemetadata')) {
+if ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 14) {
     $tempColumns['visible'] = [
         'exclude' => true,
         'label' => 'LLL:EXT:fal_protect/Resources/Private/Language/locallang_db.xlf:sys_file_metadata.visible',
@@ -75,7 +75,7 @@ if (!\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('filemetadata'
             fe_groups
         ',
         '',
-        'after:title'
+        'after:status'
     );
 }
 
