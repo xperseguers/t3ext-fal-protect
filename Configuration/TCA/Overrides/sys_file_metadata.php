@@ -33,7 +33,7 @@ $tempColumns = [
 $filemetadataLoaded = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('filemetadata');
 $typo3Version = (new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion();
 
-if ($typo3Version >= 14 || ($typo3Version < 14 && !$filemetadataLoaded)) {
+if ($typo3Version >= 14 || !$filemetadataLoaded) {
     $tempColumns['visible'] = [
         'exclude' => true,
         'label' => 'LLL:EXT:fal_protect/Resources/Private/Language/locallang_db.xlf:sys_file_metadata.visible',
@@ -70,29 +70,17 @@ if ($typo3Version >= 14 || ($typo3Version < 14 && !$filemetadataLoaded)) {
         ],
     ];
 
-    if ($typo3Version >= 14) {
-        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes(
-            'sys_file_metadata',
-            '
-                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:access,
-                visible,
-                fe_groups
-            ',
-            '',
-            'after:status'
-        );
-    } else {
-        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes(
-            'sys_file_metadata',
-            '
-                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:access,
-                visible,
-                fe_groups
-            ',
-            '',
-            'after:title'
-        );
-    }
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes(
+        'sys_file_metadata',
+        '
+            --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:access,
+            visible,
+            fe_groups
+        ',
+        '',
+        // As of TYPO3 v14, the Access tab follows the Metadata tab, which ends with "status"
+        $typo3Version >= 14 ? 'after:status' : 'after:title'
+    );
 }
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns('sys_file_metadata', $tempColumns);
